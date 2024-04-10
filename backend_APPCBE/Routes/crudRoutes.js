@@ -30,6 +30,38 @@ router.post('/login', (req, res) => {
 });
 
 
+router.get('/readReporteEstadis', (req, res) => {
+  // Consulta SQL que une las cantidades de género de alumnos y docentes
+  const sql = `
+    SELECT 'Alumno' AS Tipo, p.Genero, COUNT(*) AS Cantidad
+    FROM alumno a
+    JOIN persona p ON a.ID_Persona = p.ID_Persona
+    GROUP BY p.Genero
+
+    UNION ALL
+
+    SELECT 'Docente' AS Tipo, p.Genero, COUNT(*) AS Cantidad
+    FROM docente d
+    JOIN persona p ON d.ID_Persona = p.ID_Persona
+    GROUP BY p.Genero;
+  `;
+
+  // Ejecuta la consulta
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error al leer registros de Personas:', err);
+      res.status(500).json({ error: 'Error al leer registros de Personas' });
+    } else {
+      // Devuelve los registros en formato JSON como respuesta
+      res.status(200).json(result);
+    }
+  });
+});
+
+
+
+
+
   // Ruta para leer registros de alumnos y su información de persona
   router.get('/readAlumno', (req, res) => {
     // Utiliza la instancia de la base de datos pasada como parámetro

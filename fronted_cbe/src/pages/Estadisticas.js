@@ -1,130 +1,154 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Button, Row, Col, Card, Container } from 'react-bootstrap';
 import jsPDF from 'jspdf';
 import Chart from 'chart.js/auto';
 import html2canvas from 'html2canvas';
 
+// Asumimos que tienes un componente Header que maneja la cabecera y rol.
 import Header from '../components/Header';
 
 const Estadisticas = ({ rol }) => {
   const [alumnosPorGrado, setAlumnosPorGrado] = useState([]);
-  const [myChart, setMyChart] = useState(null);
+  const [datosGenero, setDatosGenero] = useState([]);
+  const barChartRef = useRef(null);
+  const pieChartRef = useRef(null);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    if (alumnosPorGrado.length > 0) {
-      updateChart();
-    }
-  }, [alumnosPorGrado]);
-
-  const fetchData = () => {
+  // Función para obtener los datos de alumnos por grado
+  const fetchDatosAlumnos = () => {
     fetch('http://localhost:5000/crud/readReporte')
       .then((response) => response.json())
       .then((data) => setAlumnosPorGrado(data))
-      .catch((error) => console.error('Error al obtener datos:', error));
+      .catch((error) => console.error('Error al obtener datos de alumnos por grado:', error));
   };
 
-  const updateChart = () => {
-    const ctx = document.getElementById('myChart');
+  // Función para obtener los datos de género de alumnos y docentes
+  const fetchDatosGenero = () => {
+    fetch('http://localhost:5000/crud/readReporteEstadis')
+      .then((response) => response.json())
+      .then((data) => setDatosGenero(data))
+      .catch((error) => console.error('Error al obtener datos de género:', error));
+  };
 
-    if (myChart !== null) {
-      myChart.destroy();
-    }
+  // Efecto para obtener los datos al montar el componente
+  useEffect(() => {
+    fetchDatosAlumnos();
+    fetchDatosGenero();
+  }, []);
 
-    const nombresGrados = alumnosPorGrado.map((grado) => `Grado ${grado.ID_Grado}`);
-    const cantidadesAlumnos = alumnosPorGrado.map((grado) => grado.Cant_Estudiante);
-
-    const chart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: nombresGrados,
-        datasets: [{
-          label: 'Cantidad de Alumnos',
-          data: cantidadesAlumnos,
-          backgroundColor: 'rgba(75, 192, 192, 0.5)', // Cambia este color según tus preferencias
-          borderColor: 'rgba(75, 192, 192, 1)',
-          borderWidth: 1,
-        }],
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true,
+  // Efecto para crear el gráfico de barras
+  useEffect(() => {
+    if (alumnosPorGrado.length > 0 && barChartRef.current) {
+      const ctxBar = barChartRef.current.getContext('2d');
+      const barChart = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+          labels: alumnosPorGrado.map(grado => `Grado ${grado.ID_Grado}`),
+          datasets: [{
+            label: 'Cantidad de Alumnos',
+            data: alumnosPorGrado.map(grado => grado.Cant_Estudiante),
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+          }],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
           },
         },
-      },
+      });
+      return () => barChart.destroy();
+    }
+  }, [alumnosPorGrado]);
+
+  // Efecto para crear el gráfico de torta
+  useEffect(() => {
+    if (datosGenero.length > 0 && pieChartRef.current) {
+      const ctxPie = pieChartRef.current.getContext('2d');
+      const pieChart = new Chart(ctxPie, {
+        type: 'pie',
+        data: {
+          labels: datosGenero.map(dato => dato.Genero),
+          datasets: [{
+            label: 'Cantidad por Género',
+            data: datosGenero.map(dato => dato.Cantidad),
+            backgroundColor: ['rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)'],
+            borderColor: ['rgba(255,99,132,1)', 'rgba(54, 162, 235, 1)'],
+            borderWidth: 1,
+          }],
+        },
+      });
+      return () => pieChart.destroy();
+    }
+  }, [datosGenero]);
+
+  const generarReporteDatos = (titulo, datos, fileName) => {
+    const pdf = new jsPDF();
+    pdf.text(titulo, 10, 10);
+    let y = 20;
+    datos.forEach(dato => {
+      pdf.text(`${dato.ID_Grado ? 'Grado ' + dato.ID_Grado : dato.Tipo + ' - ' + dato.Genero}: ${dato.Cant_Estudiante || dato.Cantidad}`, 10, y);
+      y += 10;
     });
-
-    setMyChart(chart);
+    pdf.save(`${fileName}.pdf`);
   };
 
-  const generarReporteAlumnos = () => {
-    fetchData();
-
-    fetch('http://localhost:5000/crud/readReporte')
-      .then((response) => response.json())
-      .then((alumnos) => {
-        const doc = new jsPDF();
-        let y = 15;
-
-        doc.text("Reporte de Alumnos por Grado", 20, 10);
-
-        alumnos.forEach((grado) => {
-          doc.text(`Grado: ${grado.ID_Grado}`, 20, y);
-          doc.text(`Cantidad de Alumnos: ${grado.Cant_Estudiante}`, 20, y + 10);
-
-          y += 30;
-          if (y >= 280) {
-            doc.addPage();
-            y = 15;
-          }
-        });
-
-        doc.save("reporte_alumnos.pdf");
-      })
-      .catch((error) => console.error('Error al generar el reporte:', error));
-  };
-
-  const generarReporteAlumnosImg = async () => {
-    try {
-      const canvas = await html2canvas(document.getElementById('myChart'));
-      const pdf = new jsPDF();
-      const imgData = canvas.toDataURL('image/png');
-
-      pdf.text("Reporte de Alumnos por Grado", 20, 10);
-      pdf.addImage(imgData, 'PNG', 10, 20, 100, 100);
-      pdf.save("reporte_alumnos_con_grafico.pdf");
-    } catch (error) {
-      console.error('Error al generar el reporte con imagen:', error);
+  const generarReporteAlumnos = async () => {
+    if (barChartRef.current) {
+      const canvasBar = await html2canvas(barChartRef.current);
+      const imgDataBar = canvasBar.toDataURL('image/png');
+      const pdfBar = new jsPDF();
+      pdfBar.text("Reporte de Alumnos por Grado", 20, 10);
+      pdfBar.addImage(imgDataBar, 'PNG', 10, 20, 180, 150);
+      pdfBar.save("reporte_alumnos_con_grafico.pdf");
     }
   };
+  
+  const generarReporteGenero = async () => {
+    if (pieChartRef.current) {
+      const canvasPie = await html2canvas(pieChartRef.current);
+      const imgDataPie = canvasPie.toDataURL('image/png');
+      const pdfPie = new jsPDF();
+      pdfPie.text("Reporte de Género de Alumnos y Docentes", 20, 10);
+      pdfPie.addImage(imgDataPie, 'PNG', 10, 20, 180, 150);
+      pdfPie.save("reporte_genero_con_grafico.pdf");
+    }
+  };
+  
 
   return (
     <div>
       <Header rol={rol} />
-      <Container className="margen-contenedor">
-        <Row className="mt-3">
-          <Col sm="6" md="6" lg="4">
-            <Card className="d-flex align-items-center justify-content-center">
-              <Card.Body className="text-center">
+      <Container className="mt-3">
+        <Row>
+          <Col sm={6}>
+            <Card>
+              <Card.Body>
                 <Card.Title>Alumnos por Grado</Card.Title>
-                <canvas id="myChart" height="300"></canvas>
-                <Button onClick={generarReporteAlumnos}>
-                  Generar reporte
+                <canvas ref={barChartRef} height="150"></canvas>
+                {/* Botones separados con margen */}
+                <Button variant="primary" onClick={() => generarReporteDatos("Datos de Alumnos por Grado", alumnosPorGrado, "reporte_alumnos")} className="mt-2 me-2">
+                  Descargar Datos
+                </Button>
+                <Button variant="success" onClick={generarReporteAlumnos} className="mt-2">
+                  Descargar Reporte de Barras
                 </Button>
               </Card.Body>
             </Card>
           </Col>
-          <Col sm="6" md="6" lg="4">
-            <Card className="d-flex align-items-center justify-content-center">
-              <Card.Body className="text-center">
-                <Card.Title>Alumnos por Grado</Card.Title>
-                {/* Otro contenido que puedas tener en el cuerpo de la tarjeta */}
-                <Button onClick={generarReporteAlumnosImg}>
-                  Generar reporte con gráfico
+          <Col sm={6}>
+            <Card>
+              <Card.Body>
+                <Card.Title>Género de Alumnos y Docentes</Card.Title>
+                <canvas ref={pieChartRef} height="150"></canvas>
+                {/* Botones separados con margen */}
+                <Button variant="primary" onClick={() => generarReporteDatos("Datos de Género", datosGenero, "reporte_genero")} className="mt-2 me-2">
+                  Descargar Datos
+                </Button>
+                <Button variant="success" onClick={generarReporteGenero} className="mt-2">
+                  Descargar Reporte de Torta
                 </Button>
               </Card.Body>
             </Card>
@@ -133,6 +157,6 @@ const Estadisticas = ({ rol }) => {
       </Container>
     </div>
   );
-}
+};
 
 export default Estadisticas;
