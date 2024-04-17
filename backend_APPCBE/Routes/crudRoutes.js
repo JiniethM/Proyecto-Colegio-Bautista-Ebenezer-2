@@ -30,6 +30,45 @@ router.post('/login', (req, res) => {
 });
 
 
+router.get('/reporteEstadisticoAlumnos', (req, res) => {
+  const sqlAlumnos = `
+    SELECT 'Alumno' AS Tipo, p.Genero, COUNT(*) AS Cantidad
+    FROM alumno a
+    JOIN persona p ON a.ID_Persona = p.ID_Persona
+    GROUP BY p.Genero;
+  `;
+
+  db.query(sqlAlumnos, (err, result) => {
+    if (err) {
+      console.error('Error al leer registros de alumnos:', err);
+      res.status(500).json({ error: 'Error al leer registros de alumnos' });
+    } else {
+      res.status(200).json(result);
+    }
+  });
+});
+
+
+router.get('/reporteEstadisticoDocentes', (req, res) => {
+  const sqlDocentes = `
+    SELECT 'Docente' AS Tipo, p.Genero, COUNT(*) AS Cantidad
+    FROM docente d
+    JOIN persona p ON d.ID_Persona = p.ID_Persona
+    GROUP BY p.Genero;
+  `;
+
+  db.query(sqlDocentes, (err, result) => {
+    if (err) {
+      console.error('Error al leer registros de docentes:', err);
+      res.status(500).json({ error: 'Error al leer registros de docentes' });
+    } else {
+      res.status(200).json(result);
+    }
+  });
+});
+
+
+
 router.get('/readReporteEstadis', (req, res) => {
   // Consulta SQL que une las cantidades de género de alumnos y docentes
   const sql = `

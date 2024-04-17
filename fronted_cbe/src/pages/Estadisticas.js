@@ -12,7 +12,6 @@ const Estadisticas = ({ rol }) => {
   const [datosGenero, setDatosGenero] = useState([]);
   const barChartRef = useRef(null);
   const pieChartRef = useRef(null);
-
   // Función para obtener los datos de alumnos por grado
   const fetchDatosAlumnos = () => {
     fetch('http://localhost:5000/crud/readReporte')
@@ -22,12 +21,17 @@ const Estadisticas = ({ rol }) => {
   };
 
   // Función para obtener los datos de género de alumnos y docentes
-  const fetchDatosGenero = () => {
-    fetch('http://localhost:5000/crud/readReporteEstadis')
-      .then((response) => response.json())
-      .then((data) => setDatosGenero(data))
-      .catch((error) => console.error('Error al obtener datos de género:', error));
-  };
+  // Función para obtener los datos de género de alumnos y docentes
+const fetchDatosGenero = () => {
+  fetch('http://localhost:5000/crud/readReporteEstadis')
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data); // Esto mostrará la estructura de los datos en la consola.
+  setDatosGenero(data);
+    })
+    .catch((error) => console.error('Error al obtener datos de género:', error));
+};
+
 
   // Efecto para obtener los datos al montar el componente
   useEffect(() => {
@@ -67,22 +71,75 @@ const Estadisticas = ({ rol }) => {
   useEffect(() => {
     if (datosGenero.length > 0 && pieChartRef.current) {
       const ctxPie = pieChartRef.current.getContext('2d');
+      const total = datosGenero.reduce((acc, dato) => acc + dato.Cantidad, 0);
+      const colores = [
+        'rgba(255, 99, 132, 0.5)',
+        'rgba(54, 162, 235, 0.5)',
+        'rgba(255, 206, 86, 0.5)',
+        'rgba(75, 192, 192, 0.5)',
+        // Añade más colores si necesitas
+      ];
+  
       const pieChart = new Chart(ctxPie, {
         type: 'pie',
         data: {
-          labels: datosGenero.map(dato => dato.Genero),
+          labels: datosGenero.map(dato => `${dato.Tipo} ${dato.Genero}`),
           datasets: [{
-            label: 'Cantidad por Género',
+            label: 'Cantidad por Género y Rol',
             data: datosGenero.map(dato => dato.Cantidad),
-            backgroundColor: ['rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)'],
-            borderColor: ['rgba(255,99,132,1)', 'rgba(54, 162, 235, 1)'],
+            backgroundColor: colores,
+            borderColor: colores.map(color => color.replace('0.5', '1')),
             borderWidth: 1,
           }],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'right',
+              labels: {
+                usePointStyle: true,
+                padding: 20,
+                generateLabels: chart => {
+                  const datasets = chart.data.datasets[0];
+                  return chart.data.labels.map((label, index) => {
+                    const value = datasets.data[index];
+                    const color = datasets.backgroundColor[index];
+                    const percentage = ((value / total) * 100).toFixed(2) + '%';
+                    return {
+                      text: `${label}: ${percentage}`,
+                      fillStyle: color,
+                      strokeStyle: color,
+                      lineWidth: 0.5,
+                      hidden: !chart.getDataVisibility(index),
+                      index
+                    };
+                  });
+                }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(tooltipItem) {
+                  let label = tooltipItem.chart.data.labels[tooltipItem.dataIndex] || '';
+                  if (label) {
+                    label += ': ';
+                  }
+                  const currentValue = tooltipItem.chart.data.datasets[tooltipItem.datasetIndex].data[tooltipItem.dataIndex];
+                  const percentage = ((currentValue / total) * 100).toFixed(2) + '%';
+                  label += `${currentValue} (${percentage})`;
+                  return label;
+                }
+              }
+            }
+          }
         },
       });
       return () => pieChart.destroy();
     }
   }, [datosGenero]);
+  
+
 
   const generarReporteDatos = (titulo, datos, fileName) => {
     const pdf = new jsPDF();

@@ -6,6 +6,8 @@ import Docente from './pages/Docente';
 import DocenteList from './pages/DocenteList';
 import Alumno from './pages/Alumno';
 import AlumnoList from './pages/AlumnoList';
+import AlumnoEstadistica from './pages/AlumnoEstadisticas';
+import DocenteEstadistica from './pages/DocenteEstadistica';
 import Tutor from './pages/Tutor';
 import TutorList from './pages/TutorList';
 import Matricula from './pages/Matricula';
@@ -16,7 +18,6 @@ import Asignatura from './pages/Asignatura';
 import AsignaturaList from './pages/AsignaturaList';
 import PagoColegiatura from './pages/PagoColegiatura';
 import PagoColegiaturaList from './pages/PagoColegiaturaList';
-
 import Calificacion from './pages/Calificacion';
 import CalificacionList from './pages/CalificacionList';
 import Estadisticas from './pages/Estadisticas';
@@ -32,8 +33,10 @@ function App() {
         <Route path="/Home" element={<Home rol={userRol}/>} />
         <Route path="/Docente" element={<Docente rol={userRol}/>} />
         <Route path="/docenteList" element={<DocenteList rol={userRol}/>} />
+        <Route path="/DocenteEstadistica" element={<DocenteEstadistica rol={userRol}/>} />
         <Route path="/Alumno" element={<Alumno rol={userRol}/>} />
         <Route path="/alumnoList" element={<AlumnoList rol={userRol}/>} />
+        <Route path="/AlumnoEstadistica" element={<AlumnoEstadistica rol={userRol}/>} />
         <Route path="/Tutor" element={<Tutor rol={userRol}/>} />
         <Route path="/actualizar-Tutor" element={<TutorList rol={userRol}/>} />
         <Route path="/Matricula" element={<Matricula rol={userRol}/>} />

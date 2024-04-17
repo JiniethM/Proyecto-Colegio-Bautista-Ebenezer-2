@@ -45,15 +45,23 @@ function Header() {
                 <NavDropdown.Item>
                   <Link to="/DocenteList" className="link-unstyled">Listar Docente</Link>
                 </NavDropdown.Item>
+
+                <NavDropdown.Item>
+                  <Link to="/DocenteEstadistica" className="link-unstyled">Docente Estadística</Link>
+                </NavDropdown.Item>
               </NavDropdown>
+              
 
               <NavDropdown title="Alumno" id="Alumno">
                 <NavDropdown.Item>
                   <Link to="/Alumno" className="link-unstyled">Registrar Alumno</Link>
                 </NavDropdown.Item>
-
                 <NavDropdown.Item>
                   <Link to="/AlumnoList" className="link-unstyled">Listar Alumno</Link>
+                </NavDropdown.Item>
+                {/* Add Alumno de Estadística */}
+                <NavDropdown.Item>
+                  <Link to="/AlumnoEstadistica" className="link-unstyled">Alumno Estadística</Link>
                 </NavDropdown.Item>
               </NavDropdown>
 
@@ -166,6 +174,10 @@ function Header() {
               <NavDropdown.Item>
                 <Link to="/actualizar-Docente" className="link-unstyled">Listar Docente</Link>
               </NavDropdown.Item>
+              {/* Add Docente de Estadística */}
+              <NavDropdown.Item>
+                <Link to="/DocenteEstadistica" className="link-unstyled">Docente de Estadística</Link>
+              </NavDropdown.Item>
             </NavDropdown>
 
             <NavDropdown title="Alumno" id="Alumno">
@@ -174,6 +186,10 @@ function Header() {
               </NavDropdown.Item>
               <NavDropdown.Item>
                 <Link to="/actualizar-Alumno" className="link-unstyled">Listar Alumno</Link>
+              </NavDropdown.Item>
+              {/* Add Alumno de Estadística */}
+              <NavDropdown.Item>
+                <Link to="/AlumnoEstadistica" className="link-unstyled">Alumno de Estadística</Link>
               </NavDropdown.Item>
             </NavDropdown>
 
