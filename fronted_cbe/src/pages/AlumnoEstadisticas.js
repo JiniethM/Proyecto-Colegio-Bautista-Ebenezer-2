@@ -9,7 +9,7 @@ const Estadisticas = ({ rol }) => {
   const [datosGenero, setDatosGenero] = useState([]);
   const pieChartRef = useRef(null);
 
-  // Función para obtener los datos de género de alumnos
+  
   const fetchDatosGenero = () => {
     fetch("http://localhost:5000/crud/reporteEstadisticoAlumnos")
       .then((response) => response.json())

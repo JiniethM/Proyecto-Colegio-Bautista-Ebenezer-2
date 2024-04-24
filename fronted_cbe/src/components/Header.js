@@ -13,11 +13,6 @@ function Header() {
   return (
       
        
-
-
-
-       
-      
     <div>
       {/* Navbar principal */}
       <Navbar className="navbar-color" variant="dark" expand="md" >
