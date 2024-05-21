@@ -1,13 +1,10 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Container, FloatingLabel, Card, Button, Modal } from 'react-bootstrap';
 import Header from '../components/Header';
 import '../styles/App.css';
 import AlumnoList from './AlumnoList';
 
 function Matricula() {
-
-    // Crear un estado para cada campo del formulario
-
     const [Anio_Escolar, setAnio_Escolar] = useState('');
     const [ID_Grado, setID_Grado] = useState('');
     const [Tipo_Matricula, setTipo_Matricula] = useState('');
@@ -16,12 +13,7 @@ function Matricula() {
     const [showAlumnoListModal, setShowAlumnoListModal] = useState(false);
     const [selectedAlumno, setselectedAlumno] = useState({});
 
-
-
     const [matriculas, setMatriculas] = useState([]);
-
-
-
 
     useEffect(() => {
         fetch('http://localhost:5000/crud/ComboGrado')
@@ -34,93 +26,68 @@ function Matricula() {
             });
     }, []);
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const formData = {
+            Anio_Escolar,
+            ID_Grado,
+            Tipo_Matricula,
+            ID_Alumno: selectedAlumno.ID_Alumno
+        };
 
+        console.log('Datos a registrar:', formData);
 
+        try {
+            const response = await fetch('http://localhost:5000/crud/createMatricula', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
 
-
-
-
-    // Función para manejar el envío del formulario
-const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Crear un objeto con los datos del formulario
-    const formData = {
-        Anio_Escolar,
-        ID_Grado,
-        Tipo_Matricula,
-        ID_Alumno: selectedAlumno.ID_Alumno
-    };
-
-    console.log('Datos a registrar:', formData);
-
-    try {
-        // Realizar una solicitud HTTP al backend para enviar los datos
-        const response = await fetch('http://localhost:5000/crud/createMatricula', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-        });
-
-        if (response.ok) {
-            // El registro se creó exitosamente
-            alert('Registro exitoso');
-            // Reiniciar los campos del formulario
-
-            setAnio_Escolar('');
-            setID_Grado('');
-            setTipo_Matricula('');
-            setID_Alumno('');
-            
-        } else {
-            alert('Error al registrar Matricula');
+            if (response.ok) {
+                alert('Registro exitoso');
+                setAnio_Escolar('');
+                setID_Grado('');
+                setTipo_Matricula('');
+                setID_Alumno('');
+            } else {
+                alert('Error al registrar Matricula');
+            }
+        } catch (error) {
+            console.error('Error en la solicitud:', error);
+            alert('Error en la solicitud al servidor');
         }
-    } catch (error) {
-        console.error('Error en la solicitud:', error);
-        alert('Error en la solicitud al servidor');
-    }
-};
+    };
 
     return (
         <div>
             <Header />
-
             <Container>
                 <Card className="mt-3">
                     <Card.Body>
                         <Card.Title>Registro de Matricula</Card.Title>
                         <Form className="mt-3" onSubmit={handleSubmit}>
                             <Row className="g-3">
-
-
-
-
-
-
-                    
-
                                 <Col sm="12" md="6" lg="6">
                                     <FloatingLabel controlId="Año_Escolar" label="Año_Escolar">
                                         <Form.Select
-                                        aria-label="Año_Escolar"  
+                                            aria-label="Año_Escolar"
                                             value={Anio_Escolar}
                                             onChange={(e) => setAnio_Escolar(e.target.value)}
                                         >
-                                        <option>Seleccione el Año_Escolar</option>
-                                        <option value="2022">2022</option>
-                                        <option value="2023">2023</option>
-                                        <option value="2024">2024</option>
-                                        <option value="2025">2025</option>
-                                        <option value="2026">2026</option>
-                                        <option value="2027">2027</option>
+                                            <option>Seleccione el Año_Escolar</option>
+                                            <option value="2022">2022</option>
+                                            <option value="2023">2023</option>
+                                            <option value="2024">2024</option>
+                                            <option value="2025">2025</option>
+                                            <option value="2026">2026</option>
+                                            <option value="2027">2027</option>
                                         </Form.Select>
                                     </FloatingLabel>
                                 </Col>
 
-
-                                
                                 <Col sm="12" md="6" lg="4">
                                     <FloatingLabel controlId="ID_Grado" label="ID_Grado">
                                         <Form.Select
@@ -138,20 +105,18 @@ const handleSubmit = async (e) => {
                                     </FloatingLabel>
                                 </Col>
 
-
                                 <Col sm="6" md="6" lg="6">
-                                    <FloatingLabel controlId="Tipo_Matricula" label="Tipo_Matricula">
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Ingrese el Tipo_Matricula"
+                                    <FloatingLabel controlId="Tipo_Matricula" label="Tipo de Matricula">
+                                        <Form.Select
+                                            aria-label="Tipo_Matricula"
                                             value={Tipo_Matricula}
-                                            onChange={(e) => setTipo_Matricula(e.target.value.replace(/\d/g,''))}
-                                        />
+                                            onChange={(e) => setTipo_Matricula(e.target.value)}
+                                        >
+                                            <option value="">Seleccione el tipo de matrícula</option>
+                                            <option value="Primaria">Primaria</option>
+                                        </Form.Select>
                                     </FloatingLabel>
                                 </Col>
-
-
-
 
                                 <Col sm="6" md="6" lg="6">
                                     <FloatingLabel controlId="IdAlumno" label="Alumno">
@@ -169,33 +134,24 @@ const handleSubmit = async (e) => {
                                         </Button>
                                     </FloatingLabel>
                                 </Col>
-
-
-                            
-
                             </Row>
                             <div className="center-button">
                                 <Button variant="primary" type="submit" className="mt-3 custom-button" size="xl">
                                     Registrar
                                 </Button>
-
                             </div>
-
                         </Form>
                     </Card.Body>
                 </Card>
             </Container>
-
             <Modal show={showAlumnoListModal} onHide={() => setShowAlumnoListModal(false)} size="xl">
                 <Modal.Header closeButton>
                     <Modal.Title>Seleccionar Alumno</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                <AlumnoList handleAlumnoSelect={setselectedAlumno} />
-
+                    <AlumnoList handleAlumnoSelect={setselectedAlumno} />
                 </Modal.Body>
             </Modal>
-
         </div>
     );
 }

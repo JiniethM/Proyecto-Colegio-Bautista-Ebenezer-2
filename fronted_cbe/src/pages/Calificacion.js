@@ -29,9 +29,9 @@ function Calificacion() {
             p_ID_Asignatura,
             p_Corte_Evaluativo,
         };
-
-        console.log('Datos a enviar:', formData); // Agrega esta línea
-
+    
+        console.log('Datos a enviar:', formData); // Asegúrate de que esto registra los datos correctos
+    
         try {
             const response = await fetch('http://localhost:5000/crud/createCalificacion', {
                 method: 'POST',
@@ -40,22 +40,22 @@ function Calificacion() {
                 },
                 body: JSON.stringify(formData),
             });
-
+    
+            const data = await response.json(); // Obtén los datos de la respuesta para depuración
+            console.log('Respuesta del servidor:', data); // Registra la respuesta del servidor
+    
             if (response.ok) {
                 alert('Registro exitoso');
-                setp_Calificacion_Obtenida('');
-                setp_Fecha_Calificacion('');
-                setp_ID_Alumno('');
-                setp_ID_Asignatura('');
-                setp_Corte_Evaluativo('');
+                // Limpia los campos del formulario
             } else {
-                alert('Error al registrar el Calificacion');
+                alert('Error al registrar la calificación');
             }
         } catch (error) {
             console.error('Error en la solicitud:', error);
             alert('Error en la solicitud al servidor');
         }
     };
+    
 
 
     

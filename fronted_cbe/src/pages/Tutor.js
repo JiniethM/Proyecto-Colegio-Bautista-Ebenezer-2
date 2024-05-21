@@ -6,12 +6,8 @@ import '../styles/App.css';
 function Tutor() {
 
     // Crear un estado para cada campo del formulario
-
     const [Nombres, setNombres] = useState('');
     const [Telefono, setTelefono] = useState('');
-    
-
-
 
     // Función para manejar el envío del formulario
     const handleSubmit = async (e) => {
@@ -21,7 +17,6 @@ function Tutor() {
         const formData = {
             Nombres,
             Telefono,
-            
         };
 
         try {
@@ -38,7 +33,6 @@ function Tutor() {
                 // El registro se creó exitosamente
                 alert('Registro exitoso');
                 // Reiniciar los campos del formulario
-
                 setNombres('');
                 setTelefono('');
             } else {
@@ -53,55 +47,42 @@ function Tutor() {
     return (
         <div>
             <Header />
-
             <Container>
                 <Card className="mt-3">
                     <Card.Body>
                         <Card.Title>Registro de Tutor</Card.Title>
                         <Form className="mt-3" onSubmit={handleSubmit}>
                             <Row className="g-3">
-
-
-
-
-
                                 <Col sm="12" md="6" lg="6">
                                     <FloatingLabel controlId="Nombre del tutor" label="Nombre del tutor">
                                         <Form.Control
                                             type="text"
                                             placeholder="Ingrese el Nombre del tutor"
                                             value={Nombres}
-                                            onChange={(e) => setNombres(e.target.value.replace(/\d/g,''))}
+                                            onChange={(e) => setNombres(e.target.value.replace(/\d/g, ''))}
                                         />
                                     </FloatingLabel>
                                 </Col>
-
-
                                 <Col sm="12" md="6" lg="6">
                                     <FloatingLabel controlId="Telefono del Tutor" label="Telefono del Tutor">
                                         <Form.Control
-                                            type="number"
+                                            type="text"
                                             placeholder="Ingrese el Telefono Tutor"
                                             value={Telefono}
-                                            onChange={(e) => setTelefono(e.target.value)}
+                                            onChange={(e) => setTelefono(e.target.value.replace(/\D/g, '').slice(0, 8).replace(/(\d{4})(\d{4})/, "$1-$2"))}
                                         />
                                     </FloatingLabel>
                                 </Col>
-
-
                             </Row>
                             <div className="center-button">
                                 <Button variant="primary" type="submit" className="mt-3 custom-button" size="lg">
                                     Registrar
                                 </Button>
-
                             </div>
-
                         </Form>
                     </Card.Body>
                 </Card>
             </Container>
-
         </div>
     );
 }

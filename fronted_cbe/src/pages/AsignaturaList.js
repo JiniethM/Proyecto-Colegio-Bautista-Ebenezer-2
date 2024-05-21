@@ -4,7 +4,6 @@ import Header from '../components/Header';
 import DocenteList from './DocenteList';
 import { FaTrashCan, FaPencil } from 'react-icons/fa6';
 
-
 function AsignaturaList({ handleAsignaturaSelect }) {
     const [asignatura, setAsignatura] = useState([]);
     const [showModal, setShowModal] = useState(false);
@@ -13,7 +12,6 @@ function AsignaturaList({ handleAsignaturaSelect }) {
         Nombre_Asignatura: '',
         Horario: '',
         ID_Docente: '',
-
     });
     const [showDocenteListModal, setShowDocenteListModal] = useState(false);
     const [selectedDocente, setselectedDocente] = useState({});
@@ -23,57 +21,38 @@ function AsignaturaList({ handleAsignaturaSelect }) {
         setSearchQuery(e.target.value);
     };
 
-    
-
-
     const filteredAsignatura = asignatura.filter((asignatura) => {
-        // Convierte los valores de los campos a minúsculas para realizar una búsqueda insensible a mayúsculas y minúsculas
         const idasignatura = asignatura && asignatura.Id ? asignatura.Id.toLowerCase() : '';
         const nombre_Asignatura = asignatura && asignatura.Nombre_Asignatura ? asignatura.Nombre_Asignatura.toLowerCase() : '';
         const horario = asignatura && asignatura.Horario ? asignatura.Horario.toLowerCase() : '';
-
         const search = searchQuery.toLowerCase();
 
-        // Verifica si la cadena de búsqueda se encuentra en alguno de los campos
         return (
-            idasignatura.includes(search.toLowerCase()) ||
-            nombre_Asignatura.includes(search.toLowerCase()) ||
-            horario.includes(search.toLowerCase())
-
-
+            idasignatura.includes(search) ||
+            nombre_Asignatura.includes(search) ||
+            horario.includes(search)
         );
     });
 
-    // Formatea la fecha para el campo "Fecha_Nacimiento"
-    
-
-    // Función para abrir el modal y pasar los datos del docente seleccionado
-  const openModal = (asignatura) => {
-    setselectedAsignatura(asignatura);
-
-    // Formatea la fecha para el campo "Fecha_Nacimiento"
-    const formattedHorarios = formatDateForInput(asignatura.Horario);
-
-    setFormData({
-        Nombre_Asignatura: asignatura.Nombre_Asignatura,
-        Horario: formattedHorarios,
-        ID_Docente: asignatura.ID_Docente,
-    });
-    setShowModal(true);
-  };
-
-    
+    const openModal = (asignatura) => {
+        setselectedAsignatura(asignatura);
+        const formattedHorarios = formatDateForInput(asignatura.Horario);
+        setFormData({
+            Nombre_Asignatura: asignatura.Nombre_Asignatura,
+            Horario: formattedHorarios,
+            ID_Docente: asignatura.ID_Docente,
+        });
+        setShowModal(true);
+    };
 
     function formatDateForInput(dateTimeString) {
         const date = new Date(dateTimeString);
         const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Agregar ceros iniciales
+        const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     }
 
-
-    // Función para manejar cambios en el formulario
     const handleFormChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -90,58 +69,48 @@ function AsignaturaList({ handleAsignaturaSelect }) {
     };
 
     const handleUpdate = () => {
-        // Agrega un console.log para mostrar los datos que se enviarán
         console.log('Datos a enviar para actualizar:', formData);
-    
-        // Realiza la solicitud PUT al servidor para actualizar el registro
         fetch(`http://localhost:5000/crud/updateAsignatura/${selectedAsignatura.ID_Asignatura}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(formData), // Asegúrate de que formData coincida con la estructura de datos del servidor
+            body: JSON.stringify(formData),
         })
         .then((response) => {
             if (response.ok) {
-                // La actualización fue exitosa, puedes cerrar el modal y refrescar la lista de asignaturas
                 setShowModal(false);
-                loadAsignatura(); // Cargar la lista de asignaturas actualizada
+                loadAsignatura();
             } else {
                 console.error('Error al actualizar el registro:', response.status);
-                // Maneja el error de manera adecuada, por ejemplo, mostrando un mensaje de error al usuario
             }
         })
         .catch((error) => console.error('Error al actualizar el registro:', error));
     };
-    
-    
 
-    // Función para eliminar un asignatura
     const handleDelete = (id_asignatura) => {
         const confirmation = window.confirm('¿Seguro que deseas eliminar este asignatura?');
         if (confirmation) {
-            // Realiza la solicitud DELETE al servidor para eliminar el alumno
             console.log('Enviando solicitud DELETE con ID_Grado:', id_asignatura);
             fetch(`http://localhost:5000/crud/deleteAsignatura/${id_asignatura}`, {
                 method: 'DELETE',
             })
-                .then((response) => {
-                    if (response.ok) {
-                        console.log('Eliminación exitosa. Refrescando la lista de asignatura.');
-                        // La eliminación fue exitosa, refresca la lista de asignatura
-                        loadAsignatura();
-                    } else {
-                        console.log('Error al eliminar el asignatura:', response.status);
-                    }
-                })
-                .catch((error) => console.error('Error al eliminar el asignatura:', error));
+            .then((response) => {
+                if (response.ok) {
+                    console.log('Eliminación exitosa. Refrescando la lista de asignatura.');
+                    loadAsignatura();
+                } else {
+                    console.log('Error al eliminar el asignatura:', response.status);
+                }
+            })
+            .catch((error) => console.error('Error al eliminar el asignatura:', error));
         }
     };
-
 
     useEffect(() => {
         loadAsignatura();
     }, []);
+
     return (
         <div>
             <Header />
@@ -163,8 +132,6 @@ function AsignaturaList({ handleAsignaturaSelect }) {
                         </Col>
                     </Row>
 
-
-
                     <Table striped bordered hover responsive>
                         <thead>
                             <tr>
@@ -172,6 +139,7 @@ function AsignaturaList({ handleAsignaturaSelect }) {
                                 <th>Nombre_Asignatura</th>
                                 <th>Horario</th>
                                 <th>ID_Docente</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -182,29 +150,21 @@ function AsignaturaList({ handleAsignaturaSelect }) {
                                     <td>{formatDateForInput(asignatura.Horario)}</td>
                                     <td>{asignatura.ID_Docente}</td>
                                     <td>
-                  <div className="botoncitos-container" style={{ borderColor: 'blue', display: 'flex' }}>
-                    <Button variant="success" onClick={() => openModal(asignatura)}className='Botoncitos'>
-                      <FaPencil style={{ color: 'white' }} />
-                      </Button>
-                      
-                      <div style={{ marginLeft: '5px' }}></div>
-                      <Button variant="danger" onClick={() => handleDelete(asignatura.ID_Asignatura)} className='Botoncitos'style={{ backgroundColor: '#DC3545', borderColor: '#DC3545' }}>
-                      <FaTrashCan style={{ color: 'white' }}/>
-                      </Button>
-
-                      
-                      <Button variant="success" onClick={() => handleAsignaturaSelect(asignatura.ID_Asignatura, asignatura.Nombre_Asignatura)}>Seleccionar</Button>
-
-
-
-                      <div style={{ marginLeft: '5px' }}></div>
-                      </div>
-
-                  </td>
+                                        <div className="botoncitos-container" style={{ display: 'flex', gap: '5px' }}>
+                                            <Button variant="success" onClick={() => openModal(asignatura)}>
+                                                <FaPencil style={{ color: 'white' }} />
+                                            </Button>
+                                            <Button variant="danger" onClick={() => handleDelete(asignatura.ID_Asignatura)}>
+                                                <FaTrashCan style={{ color: 'white' }}/>
+                                            </Button>
+                                            <Button variant="success" onClick={() => handleAsignaturaSelect(asignatura.ID_Asignatura, asignatura.Nombre_Asignatura)}>
+                                                Seleccionar
+                                            </Button>
+                                        </div>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
-
                     </Table>
                 </Card.Body>
             </Card>
@@ -219,9 +179,6 @@ function AsignaturaList({ handleAsignaturaSelect }) {
                             <Card.Title>Registro de Asignatura</Card.Title>
                             <Form className="mt-3">
                                 <Row className="g-3">
-
-
-
                                     <Col sm="6" md="6" lg="4">
                                         <FloatingLabel controlId="nombreasignatura" label="Nombres Asignatura">
                                             <Form.Control
@@ -234,8 +191,6 @@ function AsignaturaList({ handleAsignaturaSelect }) {
                                         </FloatingLabel>
                                     </Col>
 
-
-
                                     <Col sm="12" md="6" lg="6">
                                         <FloatingLabel controlId="Horario" label="Horario">
                                             <Form.Control
@@ -247,9 +202,6 @@ function AsignaturaList({ handleAsignaturaSelect }) {
                                             />
                                         </FloatingLabel>
                                     </Col>
-
-
-
 
                                     <Col sm="6" md="6" lg="6">
                                         <FloatingLabel controlId="idDocente" label="Docente">
@@ -274,12 +226,8 @@ function AsignaturaList({ handleAsignaturaSelect }) {
                                         </Modal.Header>
                                         <Modal.Body>
                                             <DocenteList handleDocenteSelect={setselectedDocente} />
-
                                         </Modal.Body>
                                     </Modal>
-
-
-
                                 </Row>
                             </Form>
                         </Card.Body>
@@ -294,7 +242,6 @@ function AsignaturaList({ handleAsignaturaSelect }) {
                     </Button>
                 </Modal.Footer>
             </Modal>
-
         </div>
     );
 }

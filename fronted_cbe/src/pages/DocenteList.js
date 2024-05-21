@@ -49,7 +49,6 @@ function DocenteList({ handleDocenteSelect }) {
     );
   });
 
-
   // Función para abrir el modal y pasar los datos del docente seleccionado
   const openModal = (docente) => {
     setSelectedDocente(docente);
@@ -93,7 +92,6 @@ function DocenteList({ handleDocenteSelect }) {
       .then((data) => setDocentes(data))
       .catch((error) => console.error('Error al obtener los docentes y personas:', error));
   };
-
 
   // Función para enviar el formulario de actualización
   const handleUpdate = () => {
@@ -141,21 +139,14 @@ function DocenteList({ handleDocenteSelect }) {
       .catch((error) => console.error('Error al obtener los docentes y personas:', error));
   }, []);
 
-
-
-
-
-
- // Nueva función para seleccionar un docente
-const handleSelectDocente = (idDocente, nombres, apellidos) => {
-  handleDocenteSelect({
-    ID_Docente: idDocente,
-    Nombres: nombres,
-    Apellidos: apellidos,
-  });
-};
-
-
+  // Nueva función para seleccionar un docente
+  const handleSelectDocente = (idDocente, nombres, apellidos) => {
+    handleDocenteSelect({
+      ID_Docente: idDocente,
+      Nombres: nombres,
+      Apellidos: apellidos,
+    });
+  };
 
   return (
     <div>
@@ -206,25 +197,24 @@ const handleSelectDocente = (idDocente, nombres, apellidos) => {
                   <td>{docente.Correo}</td>
                   <td>{docente.Especialidad}</td>
                   <td>
-  <div className="botoncitos-container" style={{ borderColor: 'blue', display: 'flex' }}>
-    <Button variant="success" onClick={() => openModal(docente)} className='Botoncitos'>
-      <FaPencil />
-    </Button>
-    <div style={{ marginLeft: '5px' }}></div> {/* Ajusta el margen según tus preferencias */}
-    <Button variant="danger" onClick={() => handleDelete(docente.ID_Persona)} className='Botoncitos'>
-      <FaTrashCan />
-    </Button>
-    <div style={{ marginLeft: '5px' }}></div> {/* Ajusta el margen según tus preferencias */}
-    <Button
-      variant="primary"
-      onClick={() => handleSelectDocente(docente.ID_Docente, docente.Nombres, docente.Apellidos)}
-      className='Botoncitos'
-    >
-      <FaPlus style={{ color: 'white' }} />
-    </Button>
-  </div>
-</td>
-
+                    <div className="botoncitos-container" style={{ borderColor: 'blue', display: 'flex' }}>
+                      <Button variant="success" onClick={() => openModal(docente)} className='Botoncitos'>
+                        <FaPencil />
+                      </Button>
+                      <div style={{ marginLeft: '5px' }}></div>
+                      <Button variant="danger" onClick={() => handleDelete(docente.ID_Persona)} className='Botoncitos'>
+                        <FaTrashCan />
+                      </Button>
+                      <div style={{ marginLeft: '5px' }}></div>
+                      <Button
+                        variant="primary"
+                        onClick={() => handleSelectDocente(docente.ID_Docente, docente.Nombres, docente.Apellidos)}
+                        className='Botoncitos'
+                      >
+                        <FaPlus style={{ color: 'white' }} />
+                      </Button>
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -242,7 +232,6 @@ const handleSelectDocente = (idDocente, nombres, apellidos) => {
               <Card.Title>Registro de Docente</Card.Title>
               <Form className="mt-3">
                 <Row className="g-3">
-
                   <Col sm="6" md="6" lg="4">
                     <FloatingLabel controlId="nombres" label="Nombres">
                       <Form.Control
@@ -250,11 +239,10 @@ const handleSelectDocente = (idDocente, nombres, apellidos) => {
                         placeholder="Ingrese los nombres"
                         name="Nombres"
                         value={formData.Nombres}
-                        onChange={handleFormChange}
+                        onChange={(e) => setFormData({ ...formData, Nombres: e.target.value.replace(/\d/g, "").slice(0, 50) })}
                       />
                     </FloatingLabel>
                   </Col>
-
                   <Col sm="6" md="6" lg="4">
                     <FloatingLabel controlId="apellidos" label="Apellidos">
                       <Form.Control
@@ -262,11 +250,10 @@ const handleSelectDocente = (idDocente, nombres, apellidos) => {
                         placeholder="Ingrese los apellidos"
                         name="Apellidos"
                         value={formData.Apellidos}
-                        onChange={handleFormChange}
+                        onChange={(e) => setFormData({ ...formData, Apellidos: e.target.value.replace(/\d/g, "").slice(0, 50) })}
                       />
                     </FloatingLabel>
                   </Col>
-
                   <Col sm="12" md="6" lg="4">
                     <FloatingLabel controlId="fechaNacimiendo" label="Fecha de nacimiento">
                       <Form.Control 
@@ -278,7 +265,6 @@ const handleSelectDocente = (idDocente, nombres, apellidos) => {
                       />
                     </FloatingLabel>
                   </Col>
-
                   <Col sm="12" md="6" lg="4">
                     <FloatingLabel controlId="genero" label="Genero">
                       <Form.Select 
@@ -293,7 +279,6 @@ const handleSelectDocente = (idDocente, nombres, apellidos) => {
                       </Form.Select>
                     </FloatingLabel>
                   </Col>
-
                   <Col sm="12" md="6" lg="8">
                     <FloatingLabel controlId="direccion" label="Dirección">
                       <Form.Control 
@@ -305,19 +290,17 @@ const handleSelectDocente = (idDocente, nombres, apellidos) => {
                       />
                     </FloatingLabel>
                   </Col>
-
                   <Col sm="12" md="6" lg="4">
                     <FloatingLabel controlId="telefono" label="Teléfono">
                       <Form.Control 
-                        type="number" 
+                        type="text" 
                         placeholder="Ingrese el teléfono"
                         name="Telefono"
                         value={formData.Telefono}
-                        onChange={handleFormChange} 
+                        onChange={(e) => setFormData({ ...formData, Telefono: e.target.value.replace(/\D/g, "").slice(0, 8).replace(/(\d{4})(\d{4})/, "$1-$2") })}
                       />
                     </FloatingLabel>
                   </Col>
-
                   <Col sm="12" md="6" lg="4">
                     <FloatingLabel controlId="correo" label="Correo">
                       <Form.Control 
@@ -325,11 +308,15 @@ const handleSelectDocente = (idDocente, nombres, apellidos) => {
                         placeholder="Ingrese el correo"
                         name="Correo"
                         value={formData.Correo}
-                        onChange={handleFormChange} 
+                        onChange={(e) => setFormData({ ...formData, Correo: e.target.value })}
+                        onBlur={(e) => {
+                          if (!e.target.value.includes("@")) {
+                            alert("Falta el símbolo '@' en el correo");
+                          }
+                        }}
                       />
                     </FloatingLabel>
                   </Col>  
-
                   <Col sm="12" md="6" lg="4">
                     <FloatingLabel controlId="Especialidad" label="Especialidad">
                       <Form.Select 
@@ -339,17 +326,15 @@ const handleSelectDocente = (idDocente, nombres, apellidos) => {
                         name="Especialidad"
                       >
                         <option>Seleccione la especialidad</option>
-                        <option value="English">English</option>
-                        <option value="Español">Español</option>
-                        <option value="Matemáticas">Matemáticas</option>
-                        <option value="Taller de Arte y cultura">Taller de Arte y cultura</option>
+                        <option value="Lengua y Literatura">Lengua y Literatura</option>
+                        <option value="Matemática">Matemática</option>
                         <option value="Ciencias Naturales">Ciencias Naturales</option>
+                        <option value="Estudios Sociales">Estudios Sociales</option>
                         <option value="Educación Física">Educación Física</option>
-                        <option value="Historia">Historia</option>
+                        <option value="Artes">Artes</option>
                       </Form.Select>
                     </FloatingLabel>
                   </Col>
-
                 </Row>
               </Form>
             </Card.Body>
@@ -364,7 +349,6 @@ const handleSelectDocente = (idDocente, nombres, apellidos) => {
           </Button>
         </Modal.Footer>
       </Modal>
-
     </div>
   );
 }

@@ -624,35 +624,24 @@ router.get('/VerCalificaciones', (req, res) => {
 
 // Ruta para crear una nueva calificación
 router.post('/createCalificacion', (req, res) => {
-  console.log(req.body);  // Agrega esta línea para imprimir en la consola del servidor
+  console.log('Datos recibidos para calificación:', req.body); // Registra los datos recibidos
 
-  // Recibe los datos de la nueva calificación desde el cuerpo de la solicitud (req.body)
   const { p_Calificacion_Obtenida, p_Fecha_Calificacion, p_ID_Alumno, p_ID_Asignatura, p_Corte_Evaluativo } = req.body;
 
-  // Verifica si todos los campos necesarios están presentes
-  if (!(p_Calificacion_Obtenida && p_Fecha_Calificacion && p_ID_Alumno && p_ID_Asignatura && p_Corte_Evaluativo)) {
-      console.error('Datos recibidos:', req.body);  // Agrega esta línea para imprimir en la consola del servidor
+  if (!p_Calificacion_Obtenida || !p_Fecha_Calificacion || !p_ID_Alumno || !p_ID_Asignatura || !p_Corte_Evaluativo) {
       return res.status(400).json({ error: 'Todos los campos son obligatorios' });
   }
 
-  // Nombre del procedimiento almacenado
   const storedProcedure = 'RegistrarCalificacion';
-
-  // Llama al procedimiento almacenado
-  db.query(
-      `CALL ${storedProcedure}(?, ?, ?, ?, ?)`,
-      [p_Calificacion_Obtenida, p_Fecha_Calificacion, p_ID_Alumno, p_ID_Asignatura, p_Corte_Evaluativo],
-      (err, result) => {
-          if (err) {
-              console.error(`Error al ejecutar el procedimiento almacenado ${storedProcedure}:`, err);
-              res.status(500).json({ error: `Error al ejecutar el procedimiento almacenado ${storedProcedure}` });
-          } else {
-              // Devuelve un mensaje de éxito
-              res.status(200).json({ message: 'Calificación registrada exitosamente' });
-          }
+  db.query(`CALL ${storedProcedure}(?, ?, ?, ?, ?)`, [p_Calificacion_Obtenida, p_Fecha_Calificacion, p_ID_Alumno, p_ID_Asignatura, p_Corte_Evaluativo], (err, result) => {
+      if (err) {
+          console.error(`Error al ejecutar el procedimiento almacenado: ${err.message}`);
+          return res.status(500).json({ error: 'Error en la base de datos' });
       }
-  );
+      res.status(200).json({ message: 'Calificación registrada exitosamente', data: result });
+  });
 });
+
 
 
 // Ruta para actualizar una calificación
