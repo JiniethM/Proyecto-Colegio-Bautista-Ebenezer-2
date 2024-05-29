@@ -21,7 +21,7 @@ import PagoColegiaturaList from './pages/PagoColegiaturaList';
 import Calificacion from './pages/Calificacion';
 import CalificacionList from './pages/CalificacionList';
 import Estadisticas from './pages/Estadisticas';
-
+import Reportes from './pages/Reportes';  // Asegúrate de que esta ruta esté correcta
 
 function App() {
   const [userRol, setUserRol] = useState('');
@@ -29,7 +29,7 @@ function App() {
   return (
     <Router>
       <Routes>
-      <Route path="/" element={<Login setRol={setUserRol}/>} />
+        <Route path="/" element={<Login setRol={setUserRol}/>} />
         <Route path="/Home" element={<Home rol={userRol}/>} />
         <Route path="/Docente" element={<Docente rol={userRol}/>} />
         <Route path="/docenteList" element={<DocenteList rol={userRol}/>} />
@@ -50,6 +50,7 @@ function App() {
         <Route path="/Reporte" element={<Estadisticas rol={userRol}/>} />
         <Route path="/Calificacion" element={<Calificacion rol={userRol}/>} />
         <Route path="/CalificacionList" element={<CalificacionList rol={userRol}/>} />
+        <Route path="/EstadisticasConsulta" element={<Reportes rol={userRol}/>} />  {/* Añadir esta línea */}
       </Routes>
     </Router>
   );

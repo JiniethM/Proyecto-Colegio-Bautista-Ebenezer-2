@@ -11,137 +11,60 @@ function Header() {
   };
 
   return (
-      
-       
     <div>
-      {/* Navbar principal */}
-      <Navbar className="navbar-color" variant="dark" expand="md" >
-        <Container>
+      <Navbar className="navbar-color" variant="dark" expand="lg">
+        <Container fluid>
           <Navbar.Brand href="#home">Colegio Bautista Ebenezer</Navbar.Brand>
-          <Navbar.Toggle
-            aria-controls="basic-navbar-nav"
-            style={{ display: 'none' }}
-            className="d-sm-none d-xs-none"
-          />
+          <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={toggleMenu} />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
-
-              <Nav.Link>
-                <Link to="/" className="link-unstyled">Inicio</Link>
-              </Nav.Link>
-             
-
-
+              <Nav.Link as={Link} to="/" className="link-unstyled">Inicio</Nav.Link>
               <NavDropdown title="Docente" id="Docente">
-                <NavDropdown.Item>
-                  <Link to="/Docente" className="link-unstyled">Registrar Docente</Link>
-                </NavDropdown.Item>
-
-                <NavDropdown.Item>
-                  <Link to="/DocenteList" className="link-unstyled">Listar Docente</Link>
-                </NavDropdown.Item>
-
-                <NavDropdown.Item>
-                  <Link to="/DocenteEstadistica" className="link-unstyled">Docente Estadística</Link>
-                </NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/Docente" className="link-unstyled">Registrar Docente</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/DocenteList" className="link-unstyled">Listar Docente</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/DocenteEstadistica" className="link-unstyled">Docente Estadística</NavDropdown.Item>
               </NavDropdown>
-              
-
               <NavDropdown title="Alumno" id="Alumno">
-                <NavDropdown.Item>
-                  <Link to="/Alumno" className="link-unstyled">Registrar Alumno</Link>
-                </NavDropdown.Item>
-                <NavDropdown.Item>
-                  <Link to="/AlumnoList" className="link-unstyled">Listar Alumno</Link>
-                </NavDropdown.Item>
-                {/* Add Alumno de Estadística */}
-                <NavDropdown.Item>
-                  <Link to="/AlumnoEstadistica" className="link-unstyled">Alumno Estadística</Link>
-                </NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/Alumno" className="link-unstyled">Registrar Alumno</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/AlumnoList" className="link-unstyled">Listar Alumno</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/AlumnoEstadistica" className="link-unstyled">Alumno Estadística</NavDropdown.Item>
               </NavDropdown>
-
               <NavDropdown title="Tutor" id="Tutor">
-                <NavDropdown.Item>
-                  <Link to="/Tutor" className="link-unstyled">Registrar Tutor</Link>
-                </NavDropdown.Item>
-
-                <NavDropdown.Item>
-                <Link to="/actualizar-Tutor" className="link-unstyled">Listar Tutor</Link>
-              </NavDropdown.Item>
-            </NavDropdown>
-
-            <NavDropdown title="Matricula" id="Matricula">
-                <NavDropdown.Item>
-                  <Link to="/Matricula" className="link-unstyled">Registrar Matrícula</Link>
-                </NavDropdown.Item>
-
-                <NavDropdown.Item>
-                <Link to="/MatriculaList" className="link-unstyled">Listar Matrícula</Link>
-              </NavDropdown.Item>
-
-
-                </NavDropdown>
-
-              
-                <NavDropdown title="Grado" id="Grado">
-                <NavDropdown.Item>
-                  <Link to="/Grado" className="link-unstyled">Registrar Grado</Link>
-                </NavDropdown.Item>
-
-                <NavDropdown.Item>
-                <Link to="/GradoList" className="link-unstyled">Listar Grado</Link>
-              </NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/Tutor" className="link-unstyled">Registrar Tutor</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/actualizar-Tutor" className="link-unstyled">Listar Tutor</NavDropdown.Item>
               </NavDropdown>
-
-              
+              <NavDropdown title="Matricula" id="Matricula">
+                <NavDropdown.Item as={Link} to="/Matricula" className="link-unstyled">Registrar Matrícula</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/MatriculaList" className="link-unstyled">Listar Matrícula</NavDropdown.Item>
+              </NavDropdown>
+              <NavDropdown title="Grado" id="Grado">
+                <NavDropdown.Item as={Link} to="/Grado" className="link-unstyled">Registrar Grado</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/GradoList" className="link-unstyled">Listar Grado</NavDropdown.Item>
+              </NavDropdown>
               <NavDropdown title="Asignatura" id="Asignatura">
-                <NavDropdown.Item>
-                  <Link to="/Asignatura" className="link-unstyled">Registrar Asignatura</Link>
-                </NavDropdown.Item>
-
-                <NavDropdown.Item>
-                  <Link to="/AsignaturaList" className="link-unstyled">Listar Asignatura</Link>
-                </NavDropdown.Item>
-
-
-
-                 
-
-
+                <NavDropdown.Item as={Link} to="/Asignatura" className="link-unstyled">Registrar Asignatura</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/AsignaturaList" className="link-unstyled">Listar Asignatura</NavDropdown.Item>
               </NavDropdown>
               <NavDropdown title="Pago de colegiatura" id="PagoColegiatura">
-                <NavDropdown.Item>
-                  <Link to="/PagoColegiatura" className="link-unstyled">Registrar Pago Colegiatura</Link>
-                </NavDropdown.Item>
-
-                <NavDropdown.Item>
-                <Link to="/PagoColegiaturaList" className="link-unstyled">Listar PagoColegiatura</Link>
-              </NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/PagoColegiatura" className="link-unstyled">Registrar Pago Colegiatura</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/PagoColegiaturaList" className="link-unstyled">Listar Pago Colegiatura</NavDropdown.Item>
               </NavDropdown>
-              
-              <NavDropdown title="Reporte" id="Reporte">
-              <NavDropdown.Item>
-                <Link to="/Reporte" className="link-unstyled">Reporte</Link>
-              </NavDropdown.Item>
-              
-            </NavDropdown>
-
-            <NavDropdown title="Calificacion" id="calificacion">
-              <NavDropdown.Item>
-                <Link to="/Calificacion" className="link-unstyled">Calificacion</Link>
-              </NavDropdown.Item>
-              
-              <NavDropdown.Item>
-                <Link to="/CalificacionList" className="link-unstyled">Listado de calificacion</Link>
-              </NavDropdown.Item>
-            </NavDropdown>
-
+              <NavDropdown title="Dashboard" id="Reporte">
+                <NavDropdown.Item as={Link} to="/Reporte" className="link-unstyled">Estadísticas</NavDropdown.Item>
+              </NavDropdown>
+              <NavDropdown title="Estadísticas Consulta" id="EstadisticasConsulta">
+                <NavDropdown.Item as={Link} to="/EstadisticasConsulta" className="link-unstyled">Ver Reportes</NavDropdown.Item>
+              </NavDropdown>
+              <NavDropdown title="Calificación" id="Calificacion">
+                <NavDropdown.Item as={Link} to="/Calificacion" className="link-unstyled">Registrar Calificación</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/CalificacionList" className="link-unstyled">Listar Calificación</NavDropdown.Item>
+              </NavDropdown>
             </Nav>
           </Navbar.Collapse>
           <Button
             variant="outline-light"
             onClick={toggleMenu}
-            className="d-md-none d-block"
+            className="d-lg-none d-block"
             aria-controls="basic-navbar-nav"
             aria-expanded={showMenu ? 'true' : 'false'}
           >
@@ -149,127 +72,58 @@ function Header() {
           </Button>
         </Container>
       </Navbar>
-
-      {/* Menú lateral (Offcanvas) */}
       <Offcanvas show={showMenu} onHide={toggleMenu} placement="start">
         <Offcanvas.Header closeButton>
           <Offcanvas.Title>Menú</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
           <Nav className="flex-column">
-
-            <Nav.Link>
-              <Link to="/" className="link-unstyled">Inicio</Link>
-            </Nav.Link>
-
+            <Nav.Link as={Link} to="/" className="link-unstyled">Inicio</Nav.Link>
             <NavDropdown title="Docente" id="Docente">
-              <NavDropdown.Item>
-                <Link to="/Docente" className="link-unstyled">Registrar Docente</Link>
-              </NavDropdown.Item>
-              <NavDropdown.Item>
-                <Link to="/actualizar-Docente" className="link-unstyled">Listar Docente</Link>
-              </NavDropdown.Item>
-              {/* Add Docente de Estadística */}
-              <NavDropdown.Item>
-                <Link to="/DocenteEstadistica" className="link-unstyled">Docente de Estadística</Link>
-              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/Docente" className="link-unstyled">Registrar Docente</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/actualizar-Docente" className="link-unstyled">Listar Docente</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/DocenteEstadistica" className="link-unstyled">Docente Estadística</NavDropdown.Item>
             </NavDropdown>
-
             <NavDropdown title="Alumno" id="Alumno">
-              <NavDropdown.Item>
-                <Link to="/Alumno" className="link-unstyled">Registrar Alumno</Link>
-              </NavDropdown.Item>
-              <NavDropdown.Item>
-                <Link to="/actualizar-Alumno" className="link-unstyled">Listar Alumno</Link>
-              </NavDropdown.Item>
-              {/* Add Alumno de Estadística */}
-              <NavDropdown.Item>
-                <Link to="/AlumnoEstadistica" className="link-unstyled">Alumno de Estadística</Link>
-              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/Alumno" className="link-unstyled">Registrar Alumno</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/actualizar-Alumno" className="link-unstyled">Listar Alumno</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/AlumnoEstadistica" className="link-unstyled">Alumno Estadística</NavDropdown.Item>
             </NavDropdown>
-
             <NavDropdown title="Tutor" id="Tutor">
-              <NavDropdown.Item>
-                <Link to="/Tutor" className="link-unstyled">Registrar Tutor</Link>
-              </NavDropdown.Item>
-
-              <NavDropdown.Item>
-                <Link to="/actualizar-Tutor" className="link-unstyled">Listar Tutor</Link>
-              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/Tutor" className="link-unstyled">Registrar Tutor</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/actualizar-Tutor" className="link-unstyled">Listar Tutor</NavDropdown.Item>
             </NavDropdown>
-
-
             <NavDropdown title="Matricula" id="Matricula">
-              <NavDropdown.Item>
-                <Link to="/Matricula" className="link-unstyled">Registrar Matrícula</Link>
-              </NavDropdown.Item>
-              </NavDropdown>
-
-              <NavDropdown.Item>
-                <Link to="/MatriculaList" className="link-unstyled">Listar Matrícula</Link>
-              </NavDropdown.Item>
-
-              
-              <NavDropdown title="Grado" id="Grado">
-              <NavDropdown.Item>
-                <Link to="/Grado" className="link-unstyled">Registrar Grado</Link>
-              </NavDropdown.Item>
-
-              <NavDropdown.Item>
-                <Link to="/GradoList" className="link-unstyled">Listar Grado</Link>
-              </NavDropdown.Item>
-              </NavDropdown>
-
-              <NavDropdown title="Asignatura" id="Asignatura">
-                <NavDropdown.Item>
-                  <Link to="/Asignatura" className="link-unstyled">Registrar Asignatura</Link>
-                </NavDropdown.Item>
-    
-                <NavDropdown.Item>
-                  <Link to="/AsignaturaList" className="link-unstyled">Listar Asignatura</Link>
-                </NavDropdown.Item>
-
-
-                <NavDropdown title="Calificacion" id="Calificacion">
-                <NavDropdown.Item>
-                  <Link to="/Calificacion" className="link-unstyled">Registrar Calificacion</Link>
-                </NavDropdown.Item>
-    
-                <NavDropdown.Item>
-                  <Link to="/CalificacionList" className="link-unstyled">Listar Calificacion</Link>
-                </NavDropdown.Item>
-                </NavDropdown>
-
-
-                <NavDropdown title="Pago de colegiatura" id="PagoColegiatura">
-                <NavDropdown.Item>
-                  <Link to="/PagoColegiatura" className="link-unstyled">Registrar Pago Colegiatura</Link>
-                </NavDropdown.Item>
-
-                <NavDropdown.Item>
-                <Link to="/PagoColegiaturaList" className="link-unstyled">Listar PagoColegiatura</Link>
-              </NavDropdown.Item>
-              </NavDropdown>
-
-              
+              <NavDropdown.Item as={Link} to="/Matricula" className="link-unstyled">Registrar Matrícula</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/MatriculaList" className="link-unstyled">Listar Matrícula</NavDropdown.Item>
             </NavDropdown>
-
-            <NavDropdown title="Reporte" id="Reporte">
-              <NavDropdown.Item>
-                <Link to="/Reporte" className="link-unstyled">Reporte</Link>
-              </NavDropdown.Item>
-              
+            <NavDropdown title="Grado" id="Grado">
+              <NavDropdown.Item as={Link} to="/Grado" className="link-unstyled">Registrar Grado</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/GradoList" className="link-unstyled">Listar Grado</NavDropdown.Item>
             </NavDropdown>
-            
-
+            <NavDropdown title="Asignatura" id="Asignatura">
+              <NavDropdown.Item as={Link} to="/Asignatura" className="link-unstyled">Registrar Asignatura</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/AsignaturaList" className="link-unstyled">Listar Asignatura</NavDropdown.Item>
+            </NavDropdown>
+            <NavDropdown title="Pago de colegiatura" id="PagoColegiatura">
+              <NavDropdown.Item as={Link} to="/PagoColegiatura" className="link-unstyled">Registrar Pago Colegiatura</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/PagoColegiaturaList" className="link-unstyled">Listar Pago Colegiatura</NavDropdown.Item>
+            </NavDropdown>
+            <NavDropdown title="Dashboard" id="Reporte">
+              <NavDropdown.Item as={Link} to="/Reporte" className="link-unstyled">Estadísticas</NavDropdown.Item>
+            </NavDropdown>
+            <NavDropdown title="Estadísticas Consulta" id="EstadisticasConsulta">
+              <NavDropdown.Item as={Link} to="/EstadisticasConsulta" className="link-unstyled">Ver Reportes</NavDropdown.Item>
+            </NavDropdown>
+            <NavDropdown title="Calificación" id="Calificacion">
+              <NavDropdown.Item as={Link} to="/Calificacion" className="link-unstyled">Registrar Calificación</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/CalificacionList" className="link-unstyled">Listar Calificación</NavDropdown.Item>
+            </NavDropdown>
           </Nav>
         </Offcanvas.Body>
       </Offcanvas>
     </div>
-
-    
   );
-
 }
 
 export default Header;

@@ -1,5 +1,6 @@
 USE bd_cbe;
 
+
 SELECT * FROM persona;
 
 -- Registro de Alumnos en la tabla Persona

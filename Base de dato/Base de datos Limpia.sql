@@ -1,7 +1,10 @@
 CREATE DATABASE bd_cbe;
 USE bd_cbe;
 
-SELECT * FROM calificacion;
+SELECT * FROM usuario;
+
+INSERT INTO usuario (nombre_Usuario, contrasena, rol) VALUES ('Admi', '1234', 'Administrador');
+INSERT INTO usuario (nombre_Usuario, contrasena, rol) VALUES ('doce', '12345', 'Docente');
 
 -- Tablas
 
@@ -136,15 +139,32 @@ FOREIGN KEY (ID_Alumno) REFERENCES alumno (ID_Alumno);
 -- Procedimientos almacenados
 DELIMITER //
 
-CREATE PROCEDURE ActualizarCalificacion(p_ID_Calificacion INT, p_Calificacion_Obtenida DOUBLE)
+CREATE PROCEDURE ActualizarCalificacion(
+    IN p_ID_Calificacion INT,
+    IN p_Calificacion_Obtenida DOUBLE,
+    IN p_Fecha_Calificacion DATE,
+    IN p_Corte_Evaluativo VARCHAR(50)
+)
 BEGIN
-    UPDATE calificacion SET Calificacion_Obtenida = p_Calificacion_Obtenida WHERE ID_Calificacion = p_ID_Calificacion;
+    UPDATE calificacion 
+    SET 
+        Calificacion_Obtenida = p_Calificacion_Obtenida,
+        Fecha_Calificacion = p_Fecha_Calificacion,
+        Corte_Evaluativo = p_Corte_Evaluativo
+    WHERE 
+        ID_Calificacion = p_ID_Calificacion;
 END //
+
+
+
 
 CREATE PROCEDURE EliminarCalificacion(p_ID_Calificacion INT)
 BEGIN
     DELETE FROM calificacion WHERE ID_Calificacion = p_ID_Calificacion;
 END //
+
+
+
 
 CREATE PROCEDURE RegistrarCalificacion(p_Calificacion_Obtenida DOUBLE, p_Fecha_Calificacion DATE, p_ID_Alumno INT, p_ID_Asignatura INT, p_Corte_Evaluativo VARCHAR(50))
 BEGIN
@@ -152,13 +172,29 @@ BEGIN
     VALUES (p_Calificacion_Obtenida, p_Fecha_Calificacion, p_ID_Alumno, p_ID_Asignatura, p_Corte_Evaluativo);
 END //
 
+
+
+
 CREATE PROCEDURE VerCalificacionesConNombres()
 BEGIN
-    SELECT a.ID_Alumno, p.Nombres, c.Calificacion_Obtenida
-    FROM alumno a
-    JOIN calificacion c ON a.ID_Alumno = c.ID_Alumno
-    JOIN persona p ON a.ID_Persona = p.ID_Persona;
+    SELECT 
+        c.ID_Calificacion,
+        c.Calificacion_Obtenida,
+        c.Fecha_Calificacion,
+        CONCAT(p.Nombres, ' ', p.Apellidos) AS NombreAlumno,
+        a.Nombre_Asignatura,
+        c.Corte_Evaluativo
+    FROM 
+        calificacion c
+    JOIN 
+        alumno al ON c.ID_Alumno = al.ID_Alumno
+    JOIN 
+        persona p ON al.ID_Persona = p.ID_Persona
+    JOIN 
+        asignatura a ON c.ID_Asignatura = a.ID_Asignatura;
 END //
+
+
 
 DELIMITER ;
 

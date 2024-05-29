@@ -607,24 +607,20 @@ router.put('/updateAsignatura/:id_asignatura', (req, res) => {
 
 // Ruta para obtener todos los registros de Calificacion
 router.get('/VerCalificaciones', (req, res) => {
-  // Nombre del procedimiento almacenado
   const storedProcedure = 'VerCalificacionesConNombres';
 
-  // Llama al procedimiento almacenado
   db.query(`CALL ${storedProcedure}`, (err, result) => {
       if (err) {
           console.error(`Error al ejecutar el procedimiento almacenado ${storedProcedure}:`, err);
           res.status(500).json({ error: `Error al ejecutar el procedimiento almacenado ${storedProcedure}` });
       } else {
-          // Devolver los registros en formato JSON como respuesta
-          res.status(200).json(result[0]); // Los resultados están en el primer elemento del array result
+          res.status(200).json(result[0]);
       }
   });
 });
 
 // Ruta para crear una nueva calificación
 router.post('/createCalificacion', (req, res) => {
-  console.log('Datos recibidos para calificación:', req.body); // Registra los datos recibidos
 
   const { p_Calificacion_Obtenida, p_Fecha_Calificacion, p_ID_Alumno, p_ID_Asignatura, p_Corte_Evaluativo } = req.body;
 
@@ -646,21 +642,15 @@ router.post('/createCalificacion', (req, res) => {
 
 // Ruta para actualizar una calificación
 router.put('/updateCalificacion/:ID_Calificacion', (req, res) => {
-  // Obtén el ID de la calificación a actualizar desde los parámetros de la URL
   const ID_Calificacion = req.params.ID_Calificacion;
-
-  // Recibe los datos actualizados desde el cuerpo de la solicitud (req.body)
   const { Calificacion_Obtenida, Fecha_Calificacion, Corte_Evaluativo } = req.body;
 
-  // Verifica si se proporcionaron los datos necesarios
   if (!Calificacion_Obtenida || !Fecha_Calificacion || !Corte_Evaluativo) {
       return res.status(400).json({ error: 'Todos los campos son obligatorios' });
   }
 
-  // Nombre del procedimiento almacenado
   const storedProcedure = 'ActualizarCalificacion';
 
-  // Llama al procedimiento almacenado
   db.query(
       `CALL ${storedProcedure}(?, ?, ?, ?)`,
       [ID_Calificacion, Calificacion_Obtenida, Fecha_Calificacion, Corte_Evaluativo],
@@ -669,7 +659,6 @@ router.put('/updateCalificacion/:ID_Calificacion', (req, res) => {
               console.error(`Error al ejecutar el procedimiento almacenado ${storedProcedure}:`, err);
               res.status(500).json({ error: `Error al ejecutar el procedimiento almacenado ${storedProcedure}` });
           } else {
-              // Devuelve un mensaje de éxito
               res.status(200).json({ message: 'Calificación actualizada exitosamente' });
           }
       }
