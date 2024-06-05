@@ -3,6 +3,7 @@ CREATE DATABASE bd_cbe_DM1;
 Use bd_cbe_DM1;
 
 
+
 -- Creación de la Tabla Alumno
 CREATE TABLE Dim_Alumno (
   ID_Alumno INT PRIMARY KEY,

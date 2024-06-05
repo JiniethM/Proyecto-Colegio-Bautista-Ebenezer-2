@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/58</span>
+                <span class='fraction'>0/59</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/58</span>
+                <span class='fraction'>0/59</span>
             </div>
         
             
@@ -296,13 +296,7 @@
 <a name='L231'></a><a href='#L231'>231</a>
 <a name='L232'></a><a href='#L232'>232</a>
 <a name='L233'></a><a href='#L233'>233</a>
-<a name='L234'></a><a href='#L234'>234</a>
-<a name='L235'></a><a href='#L235'>235</a>
-<a name='L236'></a><a href='#L236'>236</a>
-<a name='L237'></a><a href='#L237'>237</a>
-<a name='L238'></a><a href='#L238'>238</a>
-<a name='L239'></a><a href='#L239'>239</a>
-<a name='L240'></a><a href='#L240'>240</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L234'></a><a href='#L234'>234</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -317,11 +311,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -347,7 +339,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -361,13 +352,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -379,10 +368,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -454,9 +445,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -467,7 +456,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -547,236 +535,230 @@ import Header from '../components/Header';
 import { FaTrashCan, FaPencil } from 'react-icons/fa6';
 &nbsp;
 function <span class="fstat-no" title="function not covered" >CalificacionList(</span>{ handleCalificacionSelect }) {
-  const [calificaciones, setCalificaciones] = <span class="cstat-no" title="statement not covered" >useState([]);</span>
-  const [showModal, setShowModal] = <span class="cstat-no" title="statement not covered" >useState(false);</span>
-  const [selectedCalificacion, setSelectedCalificacion] = <span class="cstat-no" title="statement not covered" >useState({});</span>
-  const [formData, setFormData] = <span class="cstat-no" title="statement not covered" >useState({</span>
-    Calificacion_Obtenida: '',
-    Fecha_Calificacion: '',
-    Corte_Evaluativo: '',
-&nbsp;
-  });
-&nbsp;
-  const [searchQuery, setSearchQuery] = <span class="cstat-no" title="statement not covered" >useState('');</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
-    // Llamar a la función para cargar las calificaciones al inicio
-<span class="cstat-no" title="statement not covered" >    loadCalificaciones();</span>
-  }, []);
-&nbsp;
-  const handleSearchChange = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(e</span>) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    setSearchQuery(e.target.value);</span>
-  };
-&nbsp;
-  const filteredCalificaciones = <span class="cstat-no" title="statement not covered" >calificaciones.filter(<span class="fstat-no" title="function not covered" >(c</span>alificacion) =&gt; {</span>
-    const calificacionObtenida = <span class="cstat-no" title="statement not covered" >calificacion.Calificacion_Obtenida ? calificacion.Calificacion_Obtenida.toString() : '';</span>
-    const fechaCalificacion = <span class="cstat-no" title="statement not covered" >calificacion.Fecha_Calificacion ? calificacion.Fecha_Calificacion : '';</span>
-    const corteEvaluativo = <span class="cstat-no" title="statement not covered" >calificacion.Corte_Evaluativo ? calificacion.Corte_Evaluativo.toLowerCase() : '';</span>
-    const nombreAlumno = <span class="cstat-no" title="statement not covered" >calificacion.NombreAlumno ? calificacion.NombreAlumno.toLowerCase() : '';</span> // Agregado
-    const nombre_Asignatura = <span class="cstat-no" title="statement not covered" >calificacion.Nombre_Asignatura ? calificacion.Nombre_Asignatura.toLowerCase() : '';</span> // Agregado
-  
-    const search = <span class="cstat-no" title="statement not covered" >searchQuery.toLowerCase();</span>
-  
-<span class="cstat-no" title="statement not covered" >    return (</span>
-      calificacionObtenida.includes(search) ||
-      fechaCalificacion.includes(search) ||
-      corteEvaluativo.includes(search) ||
-      nombreAlumno.includes(search)|| // Agregado
-      nombre_Asignatura.includes(search) // Agregado
-    );
-  });
-  
-&nbsp;
-  const openModal = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(c</span>alificacion) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    setSelectedCalificacion(calificacion);</span>
-    const formattedHorarios = <span class="cstat-no" title="statement not covered" >formatDateForInput(calificacion.Fecha_Calificacion);</span>
-<span class="cstat-no" title="statement not covered" >    setFormData({</span>
-      Calificacion_Obtenida: calificacion.Calificacion_Obtenida,
-      Fecha_Calificacion: formattedHorarios,
-      Corte_Evaluativo: calificacion.Corte_Evaluativo,
+    const [calificaciones, setCalificaciones] = <span class="cstat-no" title="statement not covered" >useState([]);</span>
+    const [showModal, setShowModal] = <span class="cstat-no" title="statement not covered" >useState(false);</span>
+    const [selectedCalificacion, setSelectedCalificacion] = <span class="cstat-no" title="statement not covered" >useState({});</span>
+    const [formData, setFormData] = <span class="cstat-no" title="statement not covered" >useState({</span>
+        Calificacion_Obtenida: '',
+        Fecha_Calificacion: '',
+        Corte_Evaluativo: '',
     });
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    setShowModal(true);</span>
-  };
+    const [searchQuery, setSearchQuery] = <span class="cstat-no" title="statement not covered" >useState('');</span>
 &nbsp;
+<span class="cstat-no" title="statement not covered" >    useEffect(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        loadCalificaciones();</span>
+    }, []);
 &nbsp;
-  function <span class="fstat-no" title="function not covered" >formatDateForInput(</span>dateTimeString) {
-    const date = <span class="cstat-no" title="statement not covered" >new Date(dateTimeString);</span>
-    const year = <span class="cstat-no" title="statement not covered" >date.getFullYear();</span>
-    const month = <span class="cstat-no" title="statement not covered" >String(date.getMonth() + 1).padStart(2, '0');</span> // Agregar ceros iniciales
-    const day = <span class="cstat-no" title="statement not covered" >String(date.getDate()).padStart(2, '0');</span>
-<span class="cstat-no" title="statement not covered" >    return `${year}-${month}-${day}`;</span>
-}
+    const handleSearchChange = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(e</span>) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        setSearchQuery(e.target.value);</span>
+    };
 &nbsp;
+    const filteredCalificaciones = <span class="cstat-no" title="statement not covered" >calificaciones.filter(<span class="fstat-no" title="function not covered" >(c</span>alificacion) =&gt; {</span>
+        const calificacionObtenida = <span class="cstat-no" title="statement not covered" >calificacion.Calificacion_Obtenida ? calificacion.Calificacion_Obtenida.toString() : '';</span>
+        const fechaCalificacion = <span class="cstat-no" title="statement not covered" >calificacion.Fecha_Calificacion ? calificacion.Fecha_Calificacion : '';</span>
+        const corteEvaluativo = <span class="cstat-no" title="statement not covered" >calificacion.Corte_Evaluativo ? calificacion.Corte_Evaluativo.toLowerCase() : '';</span>
+        const nombreAlumno = <span class="cstat-no" title="statement not covered" >calificacion.NombreAlumno ? calificacion.NombreAlumno.toLowerCase() : '';</span>
+        const nombreAsignatura = <span class="cstat-no" title="statement not covered" >calificacion.Nombre_Asignatura ? calificacion.Nombre_Asignatura.toLowerCase() : '';</span>
 &nbsp;
-  const handleFormChange = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(e</span>) =&gt; {</span>
-    const { name, value } = <span class="cstat-no" title="statement not covered" >e.target;</span>
-<span class="cstat-no" title="statement not covered" >    setFormData({</span>
-      ...formData,
-      [name]: value,
+        const search = <span class="cstat-no" title="statement not covered" >searchQuery.toLowerCase();</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        return (</span>
+            calificacionObtenida.includes(search) ||
+            fechaCalificacion.includes(search) ||
+            corteEvaluativo.includes(search) ||
+            nombreAlumno.includes(search) ||
+            nombreAsignatura.includes(search)
+        );
     });
-  };
 &nbsp;
-  const loadCalificaciones = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
-    // Llamar a la API para obtener las calificaciones
-<span class="cstat-no" title="statement not covered" >    fetch('http://localhost:5000/crud/VerCalificaciones')</span>
-      .then(<span class="fstat-no" title="function not covered" >(r</span>esponse) =&gt; <span class="cstat-no" title="statement not covered" >response.json())</span>
-      .then(<span class="fstat-no" title="function not covered" >(d</span>ata) =&gt; <span class="cstat-no" title="statement not covered" >setCalificaciones(data))</span>
-      .catch(<span class="fstat-no" title="function not covered" >(e</span>rror) =&gt; <span class="cstat-no" title="statement not covered" >console.error('Error al obtener las calificaciones:', error))</span>;
-  };
+    const openModal = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(c</span>alificacion) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        setSelectedCalificacion(calificacion);</span>
+        const formattedDate = <span class="cstat-no" title="statement not covered" >formatDateForInput(calificacion.Fecha_Calificacion);</span>
+<span class="cstat-no" title="statement not covered" >        setFormData({</span>
+            Calificacion_Obtenida: calificacion.Calificacion_Obtenida,
+            Fecha_Calificacion: formattedDate,
+            Corte_Evaluativo: calificacion.Corte_Evaluativo,
+        });
 &nbsp;
-  const handleUpdate = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    fetch(`http://localhost:5000/crud/updateCalificacion/${selectedCalificacion.ID_Calificacion}`, {</span>
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-      .then(<span class="fstat-no" title="function not covered" >(r</span>esponse) =&gt; {
-<span class="cstat-no" title="statement not covered" >        if (response.ok) {</span>
-<span class="cstat-no" title="statement not covered" >          setShowModal(false);</span>
-<span class="cstat-no" title="statement not covered" >          loadCalificaciones();</span>
-        }
-      })
-      .catch(<span class="fstat-no" title="function not covered" >(e</span>rror) =&gt; <span class="cstat-no" title="statement not covered" >console.error('Error al actualizar la calificación:', error))</span>;
-  };
+<span class="cstat-no" title="statement not covered" >        setShowModal(true);</span>
+    };
 &nbsp;
-  const handleDelete = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(i</span>dCalificacion) =&gt; {</span>
-    const confirmation = <span class="cstat-no" title="statement not covered" >window.confirm('¿Seguro que deseas eliminar esta calificación?');</span>
-<span class="cstat-no" title="statement not covered" >    if (confirmation) {</span>
-<span class="cstat-no" title="statement not covered" >      fetch(`http://localhost:5000/crud/deleteCalificacion/${idCalificacion}`, {</span>
-        method: 'DELETE',
-      })
-        .then(<span class="fstat-no" title="function not covered" >(r</span>esponse) =&gt; {
-<span class="cstat-no" title="statement not covered" >          if (response.ok) {</span>
-<span class="cstat-no" title="statement not covered" >            loadCalificaciones();</span>
-          } else {
-<span class="cstat-no" title="statement not covered" >            console.log('Error al eliminar la calificación:', response.status);</span>
-          }
-        })
-        .catch(<span class="fstat-no" title="function not covered" >(e</span>rror) =&gt; <span class="cstat-no" title="statement not covered" >console.error('Error al eliminar la calificación:', error))</span>;
+    function <span class="fstat-no" title="function not covered" >formatDateForInput(</span>dateTimeString) {
+        const date = <span class="cstat-no" title="statement not covered" >new Date(dateTimeString);</span>
+        const year = <span class="cstat-no" title="statement not covered" >date.getFullYear();</span>
+        const month = <span class="cstat-no" title="statement not covered" >String(date.getMonth() + 1).padStart(2, '0');</span>
+        const day = <span class="cstat-no" title="statement not covered" >String(date.getDate()).padStart(2, '0');</span>
+<span class="cstat-no" title="statement not covered" >        return `${year}-${month}-${day}`;</span>
     }
-  };
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return (</span>
-    &lt;div&gt;
-      &lt;Header /&gt;
+    const handleFormChange = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(e</span>) =&gt; {</span>
+        const { name, value } = <span class="cstat-no" title="statement not covered" >e.target;</span>
+<span class="cstat-no" title="statement not covered" >        setFormData({</span>
+            ...formData,
+            [name]: value,
+        });
+    };
 &nbsp;
-      &lt;Card className="m-3"&gt;
-        &lt;Card.Body&gt;
-          &lt;Card.Title className="mb-3"&gt;Listado de Calificaciones&lt;/Card.Title&gt;
+    const loadCalificaciones = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        fetch('http://localhost:5000/crud/VerCalificaciones')</span>
+            .then(<span class="fstat-no" title="function not covered" >(r</span>esponse) =&gt; <span class="cstat-no" title="statement not covered" >response.json())</span>
+            .then(<span class="fstat-no" title="function not covered" >(d</span>ata) =&gt; {
+<span class="cstat-no" title="statement not covered" >                console.log(data); </span>// Verificar los datos en la consola
+<span class="cstat-no" title="statement not covered" >                setCalificaciones(data);</span>
+            })
+            .catch(<span class="fstat-no" title="function not covered" >(e</span>rror) =&gt; <span class="cstat-no" title="statement not covered" >console.error('Error al obtener las calificaciones:', error))</span>;
+    };
 &nbsp;
-          &lt;Row className="mb-3"&gt;
-            &lt;Col sm="6" md="6" lg="4"&gt;
-              &lt;FloatingLabel controlId="Buscar" label="Buscar"&gt;
-                &lt;Form.Control
-                  type="text"
-                  placeholder="Buscar"
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                /&gt;
-              &lt;/FloatingLabel&gt;
-            &lt;/Col&gt;
-          &lt;/Row&gt;
+    const handleUpdate = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        fetch(`http://localhost:5000/crud/updateCalificacion/${selectedCalificacion.ID_Calificacion}`, {</span>
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        })
+            .then(<span class="fstat-no" title="function not covered" >(r</span>esponse) =&gt; {
+<span class="cstat-no" title="statement not covered" >                if (response.ok) {</span>
+<span class="cstat-no" title="statement not covered" >                    setShowModal(false);</span>
+<span class="cstat-no" title="statement not covered" >                    loadCalificaciones();</span>
+                }
+            })
+            .catch(<span class="fstat-no" title="function not covered" >(e</span>rror) =&gt; <span class="cstat-no" title="statement not covered" >console.error('Error al actualizar la calificación:', error))</span>;
+    };
 &nbsp;
-          &lt;Table striped bordered hover&gt;
-            &lt;thead&gt;
-              &lt;tr&gt;
-                &lt;th&gt;ID&lt;/th&gt;
-                &lt;th&gt;Calificación Obtenida&lt;/th&gt;
-                &lt;th&gt;Fecha Calificación&lt;/th&gt;
-                &lt;th&gt;Nombre Alumno&lt;/th&gt;
-                &lt;th&gt;Nombre asignatura&lt;/th&gt;
-                &lt;th&gt;Corte Evaluativo&lt;/th&gt;
-                &lt;th&gt;Acciones&lt;/th&gt;
-              &lt;/tr&gt;
-            &lt;/thead&gt;
-            &lt;tbody&gt;
-              {filteredCalificaciones.map(<span class="fstat-no" title="function not covered" >(c</span>alificacion) =&gt; (
-<span class="cstat-no" title="statement not covered" >                &lt;tr key={calificacion.ID_Calificacion}&gt;</span>
-                  &lt;td&gt;{calificacion.ID_Calificacion}&lt;/td&gt;
-                  &lt;td&gt;{calificacion.Calificacion_Obtenida}&lt;/td&gt;
-                  &lt;td&gt;{formatDateForInput(calificacion.Fecha_Calificacion)}&lt;/td&gt;
-                  &lt;td&gt;{calificacion.NombreAlumno}&lt;/td&gt;
-                  &lt;td&gt;{calificacion.Nombre_Asignatura}&lt;/td&gt;
-                  &lt;td&gt;{calificacion.Corte_Evaluativo}&lt;/td&gt;
-                  &lt;td&gt;
-                    &lt;Button variant="success" onClick={<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >openModal(calificacion)}</span>&gt;
-                      &lt;FaPencil /&gt;
+    const handleDelete = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(i</span>dCalificacion) =&gt; {</span>
+        const confirmation = <span class="cstat-no" title="statement not covered" >window.confirm('¿Seguro que deseas eliminar esta calificación?');</span>
+<span class="cstat-no" title="statement not covered" >        if (confirmation) {</span>
+<span class="cstat-no" title="statement not covered" >            fetch(`http://localhost:5000/crud/deleteCalificacion/${idCalificacion}`, {</span>
+                method: 'DELETE',
+            })
+                .then(<span class="fstat-no" title="function not covered" >(r</span>esponse) =&gt; {
+<span class="cstat-no" title="statement not covered" >                    if (response.ok) {</span>
+<span class="cstat-no" title="statement not covered" >                        loadCalificaciones();</span>
+                    } else {
+<span class="cstat-no" title="statement not covered" >                        console.log('Error al eliminar la calificación:', response.status);</span>
+                    }
+                })
+                .catch(<span class="fstat-no" title="function not covered" >(e</span>rror) =&gt; <span class="cstat-no" title="statement not covered" >console.error('Error al eliminar la calificación:', error))</span>;
+        }
+    };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    return (</span>
+        &lt;div&gt;
+            &lt;Header /&gt;
+&nbsp;
+            &lt;Card className="m-3"&gt;
+                &lt;Card.Body&gt;
+                    &lt;Card.Title className="mb-3"&gt;Listado de Calificaciones&lt;/Card.Title&gt;
+&nbsp;
+                    &lt;Row className="mb-3"&gt;
+                        &lt;Col sm="6" md="6" lg="4"&gt;
+                            &lt;FloatingLabel controlId="Buscar" label="Buscar"&gt;
+                                &lt;Form.Control
+                                    type="text"
+                                    placeholder="Buscar"
+                                    value={searchQuery}
+                                    onChange={handleSearchChange}
+                                /&gt;
+                            &lt;/FloatingLabel&gt;
+                        &lt;/Col&gt;
+                    &lt;/Row&gt;
+&nbsp;
+                    &lt;Table striped bordered hover&gt;
+                        &lt;thead&gt;
+                            &lt;tr&gt;
+                                &lt;th&gt;Calificación Obtenida&lt;/th&gt;
+                                &lt;th&gt;Fecha Calificación&lt;/th&gt;
+                                &lt;th&gt;Nombre Alumno&lt;/th&gt;
+                                &lt;th&gt;Nombre Asignatura&lt;/th&gt;
+                                &lt;th&gt;Corte Evaluativo&lt;/th&gt;
+                                &lt;th&gt;Acciones&lt;/th&gt;
+                            &lt;/tr&gt;
+                        &lt;/thead&gt;
+                        &lt;tbody&gt;
+                            {filteredCalificaciones.map(<span class="fstat-no" title="function not covered" >(c</span>alificacion) =&gt; (
+<span class="cstat-no" title="statement not covered" >                                &lt;tr key={calificacion.ID_Calificacion}&gt;</span>
+                                    &lt;td&gt;{calificacion.Calificacion_Obtenida}&lt;/td&gt;
+                                    &lt;td&gt;{formatDateForInput(calificacion.Fecha_Calificacion)}&lt;/td&gt;
+                                    &lt;td&gt;{calificacion.NombreAlumno}&lt;/td&gt;
+                                    &lt;td&gt;{calificacion.Nombre_Asignatura}&lt;/td&gt;
+                                    &lt;td&gt;{calificacion.Corte_Evaluativo}&lt;/td&gt;
+                                    &lt;td&gt;
+                                        &lt;Button variant="success" onClick={<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >openModal(calificacion)}</span>&gt;
+                                            &lt;FaPencil /&gt;
+                                        &lt;/Button&gt;
+                                        &lt;Button variant="danger" onClick={<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >handleDelete(calificacion.ID_Calificacion)}</span>&gt;
+                                            &lt;FaTrashCan /&gt;
+                                        &lt;/Button&gt;
+                                    &lt;/td&gt;
+                                &lt;/tr&gt;
+                            ))}
+                        &lt;/tbody&gt;
+                    &lt;/Table&gt;
+                &lt;/Card.Body&gt;
+            &lt;/Card&gt;
+&nbsp;
+            &lt;Modal show={showModal} onHide={<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >setShowModal(false)}</span> size="lg"&gt;
+                &lt;Modal.Header closeButton&gt;
+                    &lt;Modal.Title&gt;Actualizar Calificación&lt;/Modal.Title&gt;
+                &lt;/Modal.Header&gt;
+                &lt;Modal.Body&gt;
+                    &lt;Card className="mt-3"&gt;
+                        &lt;Card.Body&gt;
+                            &lt;Card.Title&gt;Registro de Calificación&lt;/Card.Title&gt;
+                            &lt;Form className="mt-3"&gt;
+                                &lt;Row className="g-3"&gt;
+                                    &lt;Col sm="12" md="6" lg="4"&gt;
+                                        &lt;FloatingLabel controlId="Calificacion_Obtenida" label="Calificación Obtenida"&gt;
+                                            &lt;Form.Control
+                                                type="text"
+                                                placeholder="Ingrese la calificación obtenida"
+                                                name="Calificacion_Obtenida"
+                                                value={formData.Calificacion_Obtenida}
+                                                onChange={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; <span class="cstat-no" title="statement not covered" >handleFormChange(e)}</span>
+                                            /&gt;
+                                        &lt;/FloatingLabel&gt;
+                                    &lt;/Col&gt;
+&nbsp;
+                                    &lt;Col sm="12" md="6" lg="4"&gt;
+                                        &lt;FloatingLabel controlId="Fecha_Calificacion" label="Fecha Calificación"&gt;
+                                            &lt;Form.Control
+                                                type="date"
+                                                name="Fecha_Calificacion"
+                                                value={formData.Fecha_Calificacion}
+                                                onChange={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; <span class="cstat-no" title="statement not covered" >handleFormChange(e)}</span>
+                                            /&gt;
+                                        &lt;/FloatingLabel&gt;
+                                    &lt;/Col&gt;
+&nbsp;
+                                    &lt;Col sm="12" md="6" lg="4"&gt;
+                                        &lt;FloatingLabel controlId="Corte_Evaluativo" label="Corte Evaluativo"&gt;
+                                            &lt;Form.Control
+                                                type="text"
+                                                placeholder="Ingrese el corte evaluativo"
+                                                name="Corte_Evaluativo"
+                                                value={formData.Corte_Evaluativo}
+                                                onChange={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; <span class="cstat-no" title="statement not covered" >handleFormChange(e)}</span>
+                                            /&gt;
+                                        &lt;/FloatingLabel&gt;
+                                    &lt;/Col&gt;
+                                &lt;/Row&gt;
+                            &lt;/Form&gt;
+                        &lt;/Card.Body&gt;
+                    &lt;/Card&gt;
+                &lt;/Modal.Body&gt;
+                &lt;Modal.Footer&gt;
+                    &lt;Button variant="secondary" onClick={<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >setShowModal(false)}</span>&gt;
+                        Cerrar
                     &lt;/Button&gt;
-                    &lt;Button variant="danger" onClick={<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >handleDelete(calificacion.ID_Calificacion)}</span>&gt;
-                      &lt;FaTrashCan /&gt;
+                    &lt;Button variant="primary" onClick={handleUpdate}&gt;
+                        Actualizar
                     &lt;/Button&gt;
-                    
-                  &lt;/td&gt;
-                &lt;/tr&gt;
-              ))}
-            &lt;/tbody&gt;
-          &lt;/Table&gt;
-        &lt;/Card.Body&gt;
-      &lt;/Card&gt;
-&nbsp;
-      &lt;Modal show={showModal} onHide={<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >setShowModal(false)}</span> size="lg"&gt;
-        &lt;Modal.Header closeButton&gt;
-          &lt;Modal.Title&gt;Actualizar Calificación&lt;/Modal.Title&gt;
-        &lt;/Modal.Header&gt;
-        &lt;Modal.Body&gt;
-          &lt;Card className="mt-3"&gt;
-            &lt;Card.Body&gt;
-              &lt;Card.Title&gt;Registro de Calificación&lt;/Card.Title&gt;
-              &lt;Form className="mt-3"&gt;
-                &lt;Row className="g-3"&gt;
-                  &lt;Col sm="12" md="6" lg="4"&gt;
-                    &lt;FloatingLabel controlId="Calificacion_Obtenida" label="Calificación Obtenida"&gt;
-                      &lt;Form.Control
-                        type="text"
-                        placeholder="Ingrese la calificación obtenida"
-                        name="Calificacion_Obtenida"
-                        value={formData.Calificacion_Obtenida}
-                        onChange={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; <span class="cstat-no" title="statement not covered" >handleFormChange(e)}</span>
-                      /&gt;
-                    &lt;/FloatingLabel&gt;
-                  &lt;/Col&gt;
-&nbsp;
-                  &lt;Col sm="12" md="6" lg="4"&gt;
-                    &lt;FloatingLabel controlId="Fecha_Calificacion" label="Fecha Calificación"&gt;
-                      &lt;Form.Control
-                        type="date"
-                        name="Fecha_Calificacion"
-                        value={formData.Fecha_Calificacion}
-                        onChange={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; <span class="cstat-no" title="statement not covered" >handleFormChange(e)}</span>
-                      /&gt;
-                    &lt;/FloatingLabel&gt;
-                  &lt;/Col&gt;
-&nbsp;
-                  &lt;Col sm="12" md="6" lg="4"&gt;
-                    &lt;FloatingLabel controlId="Corte_Evaluativo" label="Corte Evaluativo"&gt;
-                      &lt;Form.Control
-                        type="text"
-                        placeholder="Ingrese el corte evaluativo"
-                        name="Corte_Evaluativo"
-                        value={formData.Corte_Evaluativo}
-                        onChange={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; <span class="cstat-no" title="statement not covered" >handleFormChange(e)}</span>
-                      /&gt;
-                    &lt;/FloatingLabel&gt;
-                  &lt;/Col&gt;
-                &lt;/Row&gt;
-              &lt;/Form&gt;
-            &lt;/Card.Body&gt;
-          &lt;/Card&gt;
-        &lt;/Modal.Body&gt;
-        &lt;Modal.Footer&gt;
-          &lt;Button variant="secondary" onClick={<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >setShowModal(false)}</span>&gt;
-            Cerrar
-          &lt;/Button&gt;
-          &lt;Button variant="primary" onClick={handleUpdate}&gt;
-            Actualizar
-          &lt;/Button&gt;
-        &lt;/Modal.Footer&gt;
-      &lt;/Modal&gt;
-    &lt;/div&gt;
-  );
+                &lt;/Modal.Footer&gt;
+            &lt;/Modal&gt;
+        &lt;/div&gt;
+    );
 }
 &nbsp;
 export default CalificacionList;
@@ -787,7 +769,7 @@ export default CalificacionList;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-05-21T23:21:21.241Z
+                at 2024-06-02T07:43:05.936Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -49,7 +49,7 @@ const AlumnoList = ({ handleAlumnoSelect }) => {
     } else {
       return false;
     }
-  });
+  }).sort((a, b) => a.ID_Alumno - b.ID_Alumno); // Ordena los alumnos por ID
 
   const openModal = (alumno) => {
     setselectedAlumno(alumno);
@@ -207,7 +207,6 @@ const AlumnoList = ({ handleAlumnoSelect }) => {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>ID2</th>
                 <th>Nombres</th>
                 <th>Apellidos</th>
                 <th>Fecha de Nacimiento</th>
@@ -218,10 +217,9 @@ const AlumnoList = ({ handleAlumnoSelect }) => {
               </tr>
             </thead>
             <tbody>
-              {filteredAlumnos.map((alumno) => (
+              {filteredAlumnos.map((alumno, index) => (
                 <tr key={alumno.ID_Alumno}>
-                  <td>{alumno.ID_Alumno}</td>
-                  <td>{alumno.ID_Persona}</td>
+                  <td>{index + 1}</td> {/* Muestra el índice como ID, empezando en 1 */}
                   <td>{alumno.Alumno_Nombres}</td>
                   <td>{alumno.Alumno_Apellidos}</td>
                   <td>{formatDateForInput(alumno.Alumno_Fecha_Nacimiento)}</td>

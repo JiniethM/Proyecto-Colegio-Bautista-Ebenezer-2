@@ -7,14 +7,12 @@ const Login = ({ setRol }) => {
 
   const [nombre_Usuario, setNombre_Usuario] = useState('');
   const [contrasena, setContrasena] = useState('');
+  const [mensaje, setMensaje] = useState('');  // Estado para manejar el mensaje
 
   const handleSubmit = async event => {
     event.preventDefault();
-    const formData = {
-      nombre_Usuario,
-      contrasena
-    };
-  
+    const formData = { nombre_Usuario, contrasena };
+
     try {
       const response = await fetch('http://localhost:5000/crud/login', {
         method: 'POST',
@@ -23,20 +21,22 @@ const Login = ({ setRol }) => {
         },
         body: JSON.stringify(formData)
       });
-  
+
       if (response.ok) {
         const { rol } = await response.json();
         setRol(rol);
-        navigate('/home');
+        localStorage.setItem('userRol', rol);
+        setMensaje('El usuario se ha iniciado sesión exitosamente'); // Establece el mensaje de éxito
+        navigate('/Home');
       } else {
         console.log('Credenciales incorrectas');
-        alert('¡Credenciales incorrectas!');
+        setMensaje('¡Credenciales incorrectas!');  // Actualiza el mensaje de error
       }
     } catch (error) {
       console.error('Error en la solicitud: ', error);
+      setMensaje('Error al procesar la solicitud');  // Mensaje en caso de error de solicitud
     }
   };
-  
 
   return (
     <Container
@@ -123,6 +123,9 @@ const Login = ({ setRol }) => {
                     Iniciar Sesión
                   </Button>
                 </div>
+                {mensaje && (
+                  <div style={{ color: 'red', marginTop: '10px' }}>{mensaje}</div>  // Muestra el mensaje bajo el botón
+                )}
               </Form>
             </Card.Body>
           </Card>

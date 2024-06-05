@@ -22,9 +22,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "coverage": "react-scripts test --coverage --watchAll=false",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "test:auth": "react-scripts test --coverage --watchAll=false --testPathPattern='AutenticacionUsuario.test.js'"
   },
-  
   "eslintConfig": {
     "extends": [
       "react-app",

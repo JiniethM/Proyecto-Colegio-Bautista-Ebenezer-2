@@ -7,4 +7,3 @@ test('renders Inicio de Sesión', () => {
   const linkElement = screen.getByText(/Inicio de Sesión/i);
   expect(linkElement).toBeInTheDocument();
 });
-

@@ -8,6 +8,7 @@ function CalificacionList({ handleCalificacionSelect }) {
     const [showModal, setShowModal] = useState(false);
     const [selectedCalificacion, setSelectedCalificacion] = useState({});
     const [formData, setFormData] = useState({
+        ID_Calificacion: '',
         Calificacion_Obtenida: '',
         Fecha_Calificacion: '',
         Corte_Evaluativo: '',
@@ -24,27 +25,19 @@ function CalificacionList({ handleCalificacionSelect }) {
     };
 
     const filteredCalificaciones = calificaciones.filter((calificacion) => {
-        const calificacionObtenida = calificacion.Calificacion_Obtenida ? calificacion.Calificacion_Obtenida.toString() : '';
-        const fechaCalificacion = calificacion.Fecha_Calificacion ? calificacion.Fecha_Calificacion : '';
-        const corteEvaluativo = calificacion.Corte_Evaluativo ? calificacion.Corte_Evaluativo.toLowerCase() : '';
         const nombreAlumno = calificacion.NombreAlumno ? calificacion.NombreAlumno.toLowerCase() : '';
-        const nombreAsignatura = calificacion.Nombre_Asignatura ? calificacion.Nombre_Asignatura.toLowerCase() : '';
-
+        const fechaCalificacion = calificacion.Fecha_Calificacion ? formatDateForInput(calificacion.Fecha_Calificacion) : '';
         const search = searchQuery.toLowerCase();
-
-        return (
-            calificacionObtenida.includes(search) ||
-            fechaCalificacion.includes(search) ||
-            corteEvaluativo.includes(search) ||
-            nombreAlumno.includes(search) ||
-            nombreAsignatura.includes(search)
-        );
+    
+        return nombreAlumno.includes(search) || fechaCalificacion.includes(search);
     });
+    
 
     const openModal = (calificacion) => {
         setSelectedCalificacion(calificacion);
         const formattedDate = formatDateForInput(calificacion.Fecha_Calificacion);
         setFormData({
+            ID_Calificacion: calificacion.ID_Calificacion,
             Calificacion_Obtenida: calificacion.Calificacion_Obtenida,
             Fecha_Calificacion: formattedDate,
             Corte_Evaluativo: calificacion.Corte_Evaluativo,
@@ -73,11 +66,22 @@ function CalificacionList({ handleCalificacionSelect }) {
         fetch('http://localhost:5000/crud/VerCalificaciones')
             .then((response) => response.json())
             .then((data) => {
-                console.log(data); // Verificar los datos en la consola
-                setCalificaciones(data);
+                console.log('Datos recibidos:', data); // Asegúrate de verificar esta salida en la consola del navegador
+                if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0])) {
+                    setCalificaciones(data[0]); // Asumiendo que el array de datos está en la primera posición
+                } else if (Array.isArray(data)) {
+                    setCalificaciones(data); // Si la respuesta ya es un array adecuado
+                } else {
+                    console.error('Formato de datos no esperado:', data);
+                    setCalificaciones([]); // Asegura que calificaciones sea un array para evitar errores
+                }
             })
-            .catch((error) => console.error('Error al obtener las calificaciones:', error));
+            .catch((error) => {
+                console.error('Error al obtener las calificaciones:', error);
+                setCalificaciones([]); // En caso de error, también asegura que calificaciones sea un array
+            });
     };
+    
 
     const handleUpdate = () => {
         fetch(`http://localhost:5000/crud/updateCalificacion/${selectedCalificacion.ID_Calificacion}`, {
@@ -135,36 +139,38 @@ function CalificacionList({ handleCalificacionSelect }) {
                     </Row>
 
                     <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                                <th>Calificación Obtenida</th>
-                                <th>Fecha Calificación</th>
-                                <th>Nombre Alumno</th>
-                                <th>Nombre Asignatura</th>
-                                <th>Corte Evaluativo</th>
-                                <th>Acciones</th>
+                    <thead>
+                        <tr>
+                            <th>ID</th>  
+                            <th>Calificación Obtenida</th>
+                            <th>Fecha Calificación</th>
+                            <th>Nombre Alumno</th>
+                            <th>Nombre Asignatura</th>
+                            <th>Corte Evaluativo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredCalificaciones.map((calificacion, index) => (
+                            <tr key={calificacion.ID_Calificacion}>
+                                <td>{index + 1}</td>  {/* Mostrar el índice + 1 como ID secuencial */}
+                                <td>{calificacion.Calificacion_Obtenida}</td>
+                                <td>{formatDateForInput(calificacion.Fecha_Calificacion)}</td>
+                                <td>{calificacion.NombreAlumno}</td>
+                                <td>{calificacion.Nombre_Asignatura}</td>
+                                <td>{calificacion.Corte_Evaluativo}</td>
+                                <td>
+                                    <Button variant="success" onClick={() => openModal(calificacion)}>
+                                        <FaPencil />
+                                    </Button>
+                                    <Button variant="danger" onClick={() => handleDelete(calificacion.ID_Calificacion)}>
+                                        <FaTrashCan />
+                                    </Button>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {filteredCalificaciones.map((calificacion) => (
-                                <tr key={calificacion.ID_Calificacion}>
-                                    <td>{calificacion.Calificacion_Obtenida}</td>
-                                    <td>{formatDateForInput(calificacion.Fecha_Calificacion)}</td>
-                                    <td>{calificacion.NombreAlumno}</td>
-                                    <td>{calificacion.Nombre_Asignatura}</td>
-                                    <td>{calificacion.Corte_Evaluativo}</td>
-                                    <td>
-                                        <Button variant="success" onClick={() => openModal(calificacion)}>
-                                            <FaPencil />
-                                        </Button>
-                                        <Button variant="danger" onClick={() => handleDelete(calificacion.ID_Calificacion)}>
-                                            <FaTrashCan />
-                                        </Button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
+                        ))}
+                    </tbody>
+                </Table>
                 </Card.Body>
             </Card>
 

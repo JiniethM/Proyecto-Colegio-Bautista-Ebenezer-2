@@ -1,7 +1,8 @@
 CREATE DATABASE bd_cbe;
 USE bd_cbe;
 
-SELECT * FROM usuario;
+SELECT * FROM Matricula;
+
 
 INSERT INTO usuario (nombre_Usuario, contrasena, rol) VALUES ('Admi', '1234', 'Administrador');
 INSERT INTO usuario (nombre_Usuario, contrasena, rol) VALUES ('doce', '12345', 'Docente');

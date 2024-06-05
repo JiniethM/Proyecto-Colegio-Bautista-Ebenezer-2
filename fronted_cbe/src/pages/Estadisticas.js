@@ -33,7 +33,7 @@ const Estadisticas = ({ rol }) => {
             title="Dashboard de Power BI"
             width="75%"
             height="750"
-            src="https://app.powerbi.com/view?r=eyJrIjoiYmJmODVkYjItNTdlYy00ZmI1LTg4MGYtZGU5ZjVhZTY0NzFmIiwidCI6ImU0NzY0NmZlLWRhMjctNDUxOC04NDM2LTVmOGIxNThiYTEyNyIsImMiOjR9&pageName=ReportSection476d0bb4c9b40d05d637"
+            src="https://app.powerbi.com/view?r=eyJrIjoiYmJmODVkYjItNTdlYy00ZmI1LTg4MGYtZGU5ZjVhZTY0NzFmIiwidCI6ImU0NzY0NmZlLWRhMjctNDUxOC04NDM2LTVmOGIxNThiYTEyNyIsImMiOjR9"
             frameBorder="0"
             allowFullScreen="true"
           ></iframe>

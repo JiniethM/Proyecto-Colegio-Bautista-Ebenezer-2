@@ -3,9 +3,8 @@ import { Button, Row, Col, Card, Container, Form } from 'react-bootstrap';
 import jsPDF from 'jspdf';
 import Chart from 'chart.js/auto';
 import html2canvas from 'html2canvas';
-
-// Asumimos que tienes un componente Header que maneja la cabecera y rol.
 import Header from '../components/Header';
+
 
 const Estadisticas = ({ rol }) => {
   const [calificacionesPromedioAlumno, setCalificacionesPromedioAlumno] = useState([]);
@@ -20,7 +19,7 @@ const Estadisticas = ({ rol }) => {
   const [year, setYear] = useState(2023);
   const [month, setMonth] = useState(1);
 
-  const pieChartRefs = {
+  const chartRefs = {
     alumno: useRef(null),
     asignatura: useRef(null),
     grado: useRef(null),
@@ -109,32 +108,20 @@ const Estadisticas = ({ rol }) => {
     fetchTop5Asignaturas();
   }, [year, month]);
 
-  // Efecto para crear los gráficos de torta
+  // Efecto para crear los gráficos de comparación
   useEffect(() => {
-    const createPieChart = (ref, labels, data) => {
+    const createBarChart = (ref, labels, data) => {
       if (ref.current) {
-        const ctxPie = ref.current.getContext('2d');
-        const total = data.reduce((acc, value) => acc + value, 0);
-        const pieChart = new Chart(ctxPie, {
-          type: 'pie',
+        const ctxBar = ref.current.getContext('2d');
+        const barChart = new Chart(ctxBar, {
+          type: 'bar',
           data: {
             labels: labels,
             datasets: [{
+              label: 'Promedio de Calificaciones',
               data: data,
-              backgroundColor: [
-                'rgba(255, 99, 132, 0.5)',
-                'rgba(54, 162, 235, 0.5)',
-                'rgba(255, 206, 86, 0.5)',
-                'rgba(75, 192, 192, 0.5)',
-                'rgba(153, 102, 255, 0.5)',
-              ],
-              borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-              ],
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              borderColor: 'rgba(75, 192, 192, 1)',
               borderWidth: 1,
             }],
           },
@@ -142,43 +129,126 @@ const Estadisticas = ({ rol }) => {
             responsive: true,
             plugins: {
               legend: {
-                position: 'right',
+                display: false,
               },
               tooltip: {
                 callbacks: {
-                  label: function(tooltipItem) {
-                    const value = tooltipItem.raw;
-                    const percentage = ((value / total) * 100).toFixed(2) + '%';
-                    return `${tooltipItem.label}: ${value} (${percentage})`;
+                  label: function (tooltipItem) {
+                    return `${tooltipItem.label}: ${tooltipItem.raw}`;
                   }
                 }
               }
             },
+            scales: {
+              y: {
+                beginAtZero: true,
+              }
+            }
           },
         });
-        return pieChart;
+        return barChart;
+      }
+    };
+
+    const createLineChart = (ref, labels, data) => {
+      if (ref.current) {
+        const ctxLine = ref.current.getContext('2d');
+        const lineChart = new Chart(ctxLine, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Promedio de Calificaciones',
+              data: data,
+              backgroundColor: 'rgba(153, 102, 255, 0.2)',
+              borderColor: 'rgba(153, 102, 255, 1)',
+              borderWidth: 1,
+            }],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                display: false,
+              },
+              tooltip: {
+                callbacks: {
+                  label: function (tooltipItem) {
+                    return `${tooltipItem.label}: ${tooltipItem.raw}`;
+                  }
+                }
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+              }
+            }
+          },
+        });
+        return lineChart;
+      }
+    };
+
+    const createRadarChart = (ref, labels, data) => {
+      if (ref.current) {
+        const ctxRadar = ref.current.getContext('2d');
+        const radarChart = new Chart(ctxRadar, {
+          type: 'radar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Promedio de Calificaciones',
+              data: data,
+              backgroundColor: 'rgba(255, 206, 86, 0.2)',
+              borderColor: 'rgba(255, 206, 86, 1)',
+              borderWidth: 1,
+            }],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                display: false,
+              },
+              tooltip: {
+                callbacks: {
+                  label: function (tooltipItem) {
+                    return `${tooltipItem.label}: ${tooltipItem.raw}`;
+                  }
+                }
+              }
+            },
+            scales: {
+              r: {
+                beginAtZero: true,
+              }
+            }
+          },
+        });
+        return radarChart;
       }
     };
 
     const chartConfigs = [
-      { ref: pieChartRefs.alumno, labels: calificacionesPromedioAlumno.map(alumno => `${alumno.Nombres} ${alumno.Apellidos}`), data: calificacionesPromedioAlumno.map(alumno => alumno.Promedio_Calificacion) },
-      { ref: pieChartRefs.asignatura, labels: calificacionesPromedioAsignatura.map(asignatura => asignatura.Nombre_Asignatura), data: calificacionesPromedioAsignatura.map(asignatura => asignatura.Promedio_Calificacion) },
-      { ref: pieChartRefs.grado, labels: calificacionesPromedioGrado.map(grado => grado.Plan_Estudio), data: calificacionesPromedioGrado.map(grado => grado.Promedio_Calificacion) },
-      { ref: pieChartRefs.docente, labels: calificacionesPromedioDocente.map(docente => `${docente.Nombres} ${docente.Apellidos}`), data: calificacionesPromedioDocente.map(docente => docente.Promedio_Calificacion) },
-      { ref: pieChartRefs.fecha, labels: calificacionesPromedioFecha.map(fecha => `${fecha.Dia}/${fecha.Mes}/${fecha.Año}`), data: calificacionesPromedioFecha.map(fecha => fecha.Promedio_Calificacion) },
-      { ref: pieChartRefs.totalesAlumno, labels: calificacionesTotalesAlumno.map(alumno => `${alumno.Nombres} ${alumno.Apellidos}`), data: calificacionesTotalesAlumno.map(alumno => alumno.Total_Calificacion) },
-      { ref: pieChartRefs.totalesAsignatura, labels: calificacionesTotalesAsignatura.map(asignatura => asignatura.Nombre_Asignatura), data: calificacionesTotalesAsignatura.map(asignatura => asignatura.Total_Calificacion) },
-      { ref: pieChartRefs.top5Alumnos, labels: top5Alumnos.map(alumno => `${alumno.Nombres} ${alumno.Apellidos}`), data: top5Alumnos.map(alumno => alumno.Promedio_Calificacion) },
-      { ref: pieChartRefs.top5Asignaturas, labels: top5Asignaturas.map(asignatura => asignatura.Nombre_Asignatura), data: top5Asignaturas.map(asignatura => asignatura.Promedio_Calificacion) },
+      { ref: chartRefs.alumno, labels: calificacionesPromedioAlumno.slice(0, 5).map(alumno => `${alumno.Nombres} ${alumno.Apellidos}`), data: calificacionesPromedioAlumno.slice(0, 5).map(alumno => alumno.Promedio_Calificacion), createChart: createBarChart },
+      { ref: chartRefs.asignatura, labels: calificacionesPromedioAsignatura.slice(0, 5).map(asignatura => asignatura.Nombre_Asignatura), data: calificacionesPromedioAsignatura.slice(0, 5).map(asignatura => asignatura.Promedio_Calificacion), createChart: createLineChart },
+      { ref: chartRefs.grado, labels: calificacionesPromedioGrado.slice(0, 5).map(grado => grado.Plan_Estudio), data: calificacionesPromedioGrado.slice(0, 5).map(grado => grado.Promedio_Calificacion), createChart: createRadarChart },
+      { ref: chartRefs.docente, labels: calificacionesPromedioDocente.slice(0, 5).map(docente => `${docente.Nombres} ${docente.Apellidos}`), data: calificacionesPromedioDocente.slice(0, 5).map(docente => docente.Promedio_Calificacion), createChart: createBarChart },
+      { ref: chartRefs.fecha, labels: calificacionesPromedioFecha.slice(0, 5).map(fecha => `${fecha.Dia}/${fecha.Mes}/${fecha.Año}`), data: calificacionesPromedioFecha.slice(0, 5).map(fecha => fecha.Promedio_Calificacion), createChart: createLineChart },
+      { ref: chartRefs.totalesAlumno, labels: calificacionesTotalesAlumno.slice(0, 5).map(alumno => `${alumno.Nombres} ${alumno.Apellidos}`), data: calificacionesTotalesAlumno.slice(0, 5).map(alumno => alumno.Total_Calificacion), createChart: createRadarChart },
+      { ref: chartRefs.totalesAsignatura, labels: calificacionesTotalesAsignatura.slice(0, 5).map(asignatura => asignatura.Nombre_Asignatura), data: calificacionesTotalesAsignatura.slice(0, 5).map(asignatura => asignatura.Total_Calificacion), createChart: createBarChart },
+      { ref: chartRefs.top5Alumnos, labels: top5Alumnos.map(alumno => `${alumno.Nombres} ${alumno.Apellidos}`), data: top5Alumnos.map(alumno => alumno.Promedio_Calificacion), createChart: createLineChart },
+      { ref: chartRefs.top5Asignaturas, labels: top5Asignaturas.map(asignatura => asignatura.Nombre_Asignatura), data: top5Asignaturas.map(asignatura => asignatura.Promedio_Calificacion), createChart: createRadarChart },
     ];
 
-    const chartInstances = chartConfigs.map(config => createPieChart(config.ref, config.labels, config.data));
+    const chartInstances = chartConfigs.map(config => config.createChart(config.ref, config.labels, config.data));
     return () => chartInstances.forEach(chart => chart && chart.destroy());
-  }, );
+  }, [calificacionesPromedioAlumno, calificacionesPromedioAsignatura, calificacionesPromedioGrado, calificacionesPromedioDocente, calificacionesPromedioFecha, calificacionesTotalesAlumno, calificacionesTotalesAsignatura, top5Alumnos, top5Asignaturas, chartRefs]);
 
   const generarReporte = async (chartRef, datos, titulo, fileName) => {
     if (chartRef.current) {
-      const canvas = await html2canvas(chartRef.current);
+      const canvas = await html2canvas(chartRef.current, { scale: 3 });
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF();
       pdf.text(titulo, 20, 10);
@@ -202,78 +272,90 @@ const Estadisticas = ({ rol }) => {
       <Container className="mt-3">
         <Row>
           <Col sm={6} className="mb-4">
-            <Card className="h-100">
-              <Card.Body>
+            <Card className="h-100 d-flex flex-column">
+              <Card.Body className="d-flex flex-column">
                 <Card.Title>Calificaciones Promedio por Alumno</Card.Title>
-                <canvas ref={pieChartRefs.alumno} height="150"></canvas>
-                <Button variant="primary" onClick={() => generarReporte(pieChartRefs.alumno, calificacionesPromedioAlumno, "Calificaciones Promedio por Alumno", "reporte_calificaciones_alumno")} className="mt-2">
-                  Descargar Reporte
-                </Button>
+                <canvas ref={chartRefs.alumno} height="150"></canvas>
+                <div className="mt-auto">
+                  <Button variant="primary" onClick={() => generarReporte(chartRefs.alumno, calificacionesPromedioAlumno, "Calificaciones Promedio por Alumno", "reporte_calificaciones_alumno")} className="mt-2">
+                    Descargar Reporte
+                  </Button>
+                </div>
               </Card.Body>
             </Card>
           </Col>
           <Col sm={6} className="mb-4">
-            <Card className="h-100">
-              <Card.Body>
+            <Card className="h-100 d-flex flex-column">
+              <Card.Body className="d-flex flex-column">
                 <Card.Title>Calificaciones Promedio por Asignatura</Card.Title>
-                <canvas ref={pieChartRefs.asignatura} height="150"></canvas>
-                <Button variant="primary" onClick={() => generarReporte(pieChartRefs.asignatura, calificacionesPromedioAsignatura, "Calificaciones Promedio por Asignatura", "reporte_calificaciones_asignatura")} className="mt-2">
-                  Descargar Reporte
-                </Button>
+                <canvas ref={chartRefs.asignatura} height="150"></canvas>
+                <div className="mt-auto">
+                  <Button variant="primary" onClick={() => generarReporte(chartRefs.asignatura, calificacionesPromedioAsignatura, "Calificaciones Promedio por Asignatura", "reporte_calificaciones_asignatura")} className="mt-2">
+                    Descargar Reporte
+                  </Button>
+                </div>
               </Card.Body>
             </Card>
           </Col>
           <Col sm={6} className="mb-4">
-            <Card className="h-100">
-              <Card.Body>
+            <Card className="h-100 d-flex flex-column">
+              <Card.Body className="d-flex flex-column">
                 <Card.Title>Calificaciones Promedio por Grado</Card.Title>
-                <canvas ref={pieChartRefs.grado} height="150"></canvas>
-                <Button variant="primary" onClick={() => generarReporte(pieChartRefs.grado, calificacionesPromedioGrado, "Calificaciones Promedio por Grado", "reporte_calificaciones_grado")} className="mt-2">
-                  Descargar Reporte
-                </Button>
+                <canvas ref={chartRefs.grado} height="150"></canvas>
+                <div className="mt-auto">
+                  <Button variant="primary" onClick={() => generarReporte(chartRefs.grado, calificacionesPromedioGrado, "Calificaciones Promedio por Grado", "reporte_calificaciones_grado")} className="mt-2">
+                    Descargar Reporte
+                  </Button>
+                </div>
               </Card.Body>
             </Card>
           </Col>
           <Col sm={6} className="mb-4">
-            <Card className="h-100">
-              <Card.Body>
+            <Card className="h-100 d-flex flex-column">
+              <Card.Body className="d-flex flex-column">
                 <Card.Title>Calificaciones Promedio por Docente</Card.Title>
-                <canvas ref={pieChartRefs.docente} height="150"></canvas>
-                <Button variant="primary" onClick={() => generarReporte(pieChartRefs.docente, calificacionesPromedioDocente, "Calificaciones Promedio por Docente", "reporte_calificaciones_docente")} className="mt-2">
-                  Descargar Reporte
-                </Button>
+                <canvas ref={chartRefs.docente} height="150"></canvas>
+                <div className="mt-auto">
+                  <Button variant="primary" onClick={() => generarReporte(chartRefs.docente, calificacionesPromedioDocente, "Calificaciones Promedio por Docente", "reporte_calificaciones_docente")} className="mt-2">
+                    Descargar Reporte
+                  </Button>
+                </div>
               </Card.Body>
             </Card>
           </Col>
           <Col sm={6} className="mb-4">
-            <Card className="h-100">
-              <Card.Body>
+            <Card className="h-100 d-flex flex-column">
+              <Card.Body className="d-flex flex-column">
                 <Card.Title>Calificaciones Promedio por Fecha</Card.Title>
-                <canvas ref={pieChartRefs.fecha} height="150"></canvas>
-                <Button variant="primary" onClick={() => generarReporte(pieChartRefs.fecha, calificacionesPromedioFecha, "Calificaciones Promedio por Fecha", "reporte_calificaciones_fecha")} className="mt-2">
-                  Descargar Reporte
-                </Button>
+                <canvas ref={chartRefs.fecha} height="150"></canvas>
+                <div className="mt-auto">
+                  <Button variant="primary" onClick={() => generarReporte(chartRefs.fecha, calificacionesPromedioFecha, "Calificaciones Promedio por Fecha", "reporte_calificaciones_fecha")} className="mt-2">
+                    Descargar Reporte
+                  </Button>
+                </div>
               </Card.Body>
             </Card>
           </Col>
           <Col sm={6} className="mb-4">
-            <Card className="h-100">
-              <Card.Body>
+            <Card className="h-100 d-flex flex-column">
+              <Card.Body className="d-flex flex-column">
                 <Card.Title>Calificaciones Totales por Alumno</Card.Title>
                 <Form.Group controlId="formYear">
                   <Form.Label>Año</Form.Label>
                   <Form.Control type="number" value={year} onChange={(e) => setYear(e.target.value)} />
                 </Form.Group>
-                <canvas ref={pieChartRefs.totalesAlumno} height="150"></canvas>
-                <Button variant="primary" onClick={() => generarReporte(pieChartRefs.totalesAlumno, calificacionesTotalesAlumno, `Calificaciones Totales por Alumno en ${year}`, `reporte_calificaciones_totales_alumno_${year}`)} className="mt-2">
-                  Descargar Reporte
-                </Button>
+                <canvas ref={chartRefs.totalesAlumno} height="150"></canvas>
+                <div className="mt-auto">
+                  <Button variant="primary" onClick={() => generarReporte(chartRefs.totalesAlumno, calificacionesTotalesAlumno, `Calificaciones Totales por Alumno en ${year}`, `reporte_calificaciones_totales_alumno_${year}`)} className="mt-2">
+                    Descargar Reporte
+                  </Button>
+                </div>
               </Card.Body>
             </Card>
           </Col>
           <Col sm={6} className="mb-4">
-            <Card className="h-100">
-              <Card.Body>
+            <Card className="h-100 d-flex flex-column">
+              <Card.Body className="d-flex flex-column">
                 <Card.Title>Calificaciones Totales por Asignatura</Card.Title>
                 <Form.Group controlId="formYear">
                   <Form.Label>Año</Form.Label>
@@ -283,32 +365,38 @@ const Estadisticas = ({ rol }) => {
                   <Form.Label>Mes</Form.Label>
                   <Form.Control type="number" value={month} onChange={(e) => setMonth(e.target.value)} />
                 </Form.Group>
-                <canvas ref={pieChartRefs.totalesAsignatura} height="150"></canvas>
-                <Button variant="primary" onClick={() => generarReporte(pieChartRefs.totalesAsignatura, calificacionesTotalesAsignatura, `Calificaciones Totales por Asignatura en ${month}/${year}`, `reporte_calificaciones_totales_asignatura_${year}_${month}`)} className="mt-2">
-                  Descargar Reporte
-                </Button>
+                <canvas ref={chartRefs.totalesAsignatura} height="150"></canvas>
+                <div className="mt-auto">
+                  <Button variant="primary" onClick={() => generarReporte(chartRefs.totalesAsignatura, calificacionesTotalesAsignatura, `Calificaciones Totales por Asignatura en ${month}/${year}`, `reporte_calificaciones_totales_asignatura_${year}_${month}`)} className="mt-2">
+                    Descargar Reporte
+                  </Button>
+                </div>
               </Card.Body>
             </Card>
           </Col>
           <Col sm={6} className="mb-4">
-            <Card className="h-100">
-              <Card.Body>
+            <Card className="h-100 d-flex flex-column">
+              <Card.Body className="d-flex flex-column">
                 <Card.Title>Top 5 Alumnos</Card.Title>
-                <canvas ref={pieChartRefs.top5Alumnos} height="150"></canvas>
-                <Button variant="primary" onClick={() => generarReporte(pieChartRefs.top5Alumnos, top5Alumnos, "Top 5 Alumnos", "reporte_top5_alumnos")} className="mt-2">
-                  Descargar Reporte
-                </Button>
+                <canvas ref={chartRefs.top5Alumnos} height="150"></canvas>
+                <div className="mt-auto">
+                  <Button variant="primary" onClick={() => generarReporte(chartRefs.top5Alumnos, top5Alumnos, "Top 5 Alumnos", "reporte_top5_alumnos")} className="mt-2">
+                    Descargar Reporte
+                  </Button>
+                </div>
               </Card.Body>
             </Card>
           </Col>
           <Col sm={6} className="mb-4">
-            <Card className="h-100">
-              <Card.Body>
+            <Card className="h-100 d-flex flex-column">
+              <Card.Body className="d-flex flex-column">
                 <Card.Title>Top 5 Asignaturas</Card.Title>
-                <canvas ref={pieChartRefs.top5Asignaturas} height="150"></canvas>
-                <Button variant="primary" onClick={() => generarReporte(pieChartRefs.top5Asignaturas, top5Asignaturas, "Top 5 Asignaturas", "reporte_top5_asignaturas")} className="mt-2">
-                  Descargar Reporte
-                </Button>
+                <canvas ref={chartRefs.top5Asignaturas} height="150"></canvas>
+                <div className="mt-auto">
+                  <Button variant="primary" onClick={() => generarReporte(chartRefs.top5Asignaturas, top5Asignaturas, "Top 5 Asignaturas", "reporte_top5_asignaturas")} className="mt-2">
+                    Descargar Reporte
+                  </Button>
+                </div>
               </Card.Body>
             </Card>
           </Col>
@@ -316,6 +404,8 @@ const Estadisticas = ({ rol }) => {
       </Container>
     </div>
   );
+  
+  
 };
 
 export default Estadisticas;

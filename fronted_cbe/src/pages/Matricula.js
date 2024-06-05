@@ -22,7 +22,7 @@ function Matricula() {
                 setMatriculas(data);
             })
             .catch(error => {
-                console.error('Error al obtener las habitaciones', error);
+                console.error('Error al obtener los grados', error);
             });
     }, []);
 
@@ -47,14 +47,15 @@ function Matricula() {
             });
 
             if (response.ok) {
-                alert('Registro exitoso');
+                alert('Matrícula guardada y reflejada correctamente');  
                 setAnio_Escolar('');
                 setID_Grado('');
                 setTipo_Matricula('');
                 setID_Alumno('');
             } else {
-                alert('Error al registrar Matricula');
+                alert('Error al registrar Matricula');  
             }
+            
         } catch (error) {
             console.error('Error en la solicitud:', error);
             alert('Error en la solicitud al servidor');
@@ -113,7 +114,8 @@ function Matricula() {
                                             onChange={(e) => setTipo_Matricula(e.target.value)}
                                         >
                                             <option value="">Seleccione el tipo de matrícula</option>
-                                            <option value="Primaria">Primaria</option>
+                                            <option value="Nuevo Ingreso">Nuevo Ingreso</option>
+                                            <option value="Reingreso">Reingreso</option>
                                         </Form.Select>
                                     </FloatingLabel>
                                 </Col>
