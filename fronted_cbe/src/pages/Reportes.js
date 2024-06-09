@@ -5,7 +5,6 @@ import Chart from 'chart.js/auto';
 import html2canvas from 'html2canvas';
 import Header from '../components/Header';
 
-
 const Estadisticas = ({ rol }) => {
   const [calificacionesPromedioAlumno, setCalificacionesPromedioAlumno] = useState([]);
   const [calificacionesPromedioAsignatura, setCalificacionesPromedioAsignatura] = useState([]);
@@ -123,6 +122,7 @@ const Estadisticas = ({ rol }) => {
               backgroundColor: 'rgba(75, 192, 192, 0.2)',
               borderColor: 'rgba(75, 192, 192, 1)',
               borderWidth: 1,
+              stack: 'Stack 0'
             }],
           },
           options: {
@@ -140,7 +140,11 @@ const Estadisticas = ({ rol }) => {
               }
             },
             scales: {
+              x: {
+                stacked: true,
+              },
               y: {
+                stacked: true,
                 beginAtZero: true,
               }
             }
@@ -150,101 +154,21 @@ const Estadisticas = ({ rol }) => {
       }
     };
 
-    const createLineChart = (ref, labels, data) => {
-      if (ref.current) {
-        const ctxLine = ref.current.getContext('2d');
-        const lineChart = new Chart(ctxLine, {
-          type: 'line',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: 'Promedio de Calificaciones',
-              data: data,
-              backgroundColor: 'rgba(153, 102, 255, 0.2)',
-              borderColor: 'rgba(153, 102, 255, 1)',
-              borderWidth: 1,
-            }],
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              legend: {
-                display: false,
-              },
-              tooltip: {
-                callbacks: {
-                  label: function (tooltipItem) {
-                    return `${tooltipItem.label}: ${tooltipItem.raw}`;
-                  }
-                }
-              }
-            },
-            scales: {
-              y: {
-                beginAtZero: true,
-              }
-            }
-          },
-        });
-        return lineChart;
-      }
-    };
-
-    const createRadarChart = (ref, labels, data) => {
-      if (ref.current) {
-        const ctxRadar = ref.current.getContext('2d');
-        const radarChart = new Chart(ctxRadar, {
-          type: 'radar',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: 'Promedio de Calificaciones',
-              data: data,
-              backgroundColor: 'rgba(255, 206, 86, 0.2)',
-              borderColor: 'rgba(255, 206, 86, 1)',
-              borderWidth: 1,
-            }],
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              legend: {
-                display: false,
-              },
-              tooltip: {
-                callbacks: {
-                  label: function (tooltipItem) {
-                    return `${tooltipItem.label}: ${tooltipItem.raw}`;
-                  }
-                }
-              }
-            },
-            scales: {
-              r: {
-                beginAtZero: true,
-              }
-            }
-          },
-        });
-        return radarChart;
-      }
-    };
-
     const chartConfigs = [
       { ref: chartRefs.alumno, labels: calificacionesPromedioAlumno.slice(0, 5).map(alumno => `${alumno.Nombres} ${alumno.Apellidos}`), data: calificacionesPromedioAlumno.slice(0, 5).map(alumno => alumno.Promedio_Calificacion), createChart: createBarChart },
-      { ref: chartRefs.asignatura, labels: calificacionesPromedioAsignatura.slice(0, 5).map(asignatura => asignatura.Nombre_Asignatura), data: calificacionesPromedioAsignatura.slice(0, 5).map(asignatura => asignatura.Promedio_Calificacion), createChart: createLineChart },
-      { ref: chartRefs.grado, labels: calificacionesPromedioGrado.slice(0, 5).map(grado => grado.Plan_Estudio), data: calificacionesPromedioGrado.slice(0, 5).map(grado => grado.Promedio_Calificacion), createChart: createRadarChart },
+      { ref: chartRefs.asignatura, labels: calificacionesPromedioAsignatura.slice(0, 5).map(asignatura => asignatura.Nombre_Asignatura), data: calificacionesPromedioAsignatura.slice(0, 5).map(asignatura => asignatura.Promedio_Calificacion), createChart: createBarChart },
+      { ref: chartRefs.grado, labels: calificacionesPromedioGrado.slice(0, 5).map(grado => grado.Plan_Estudio), data: calificacionesPromedioGrado.slice(0, 5).map(grado => grado.Promedio_Calificacion), createChart: createBarChart },
       { ref: chartRefs.docente, labels: calificacionesPromedioDocente.slice(0, 5).map(docente => `${docente.Nombres} ${docente.Apellidos}`), data: calificacionesPromedioDocente.slice(0, 5).map(docente => docente.Promedio_Calificacion), createChart: createBarChart },
-      { ref: chartRefs.fecha, labels: calificacionesPromedioFecha.slice(0, 5).map(fecha => `${fecha.Dia}/${fecha.Mes}/${fecha.Año}`), data: calificacionesPromedioFecha.slice(0, 5).map(fecha => fecha.Promedio_Calificacion), createChart: createLineChart },
-      { ref: chartRefs.totalesAlumno, labels: calificacionesTotalesAlumno.slice(0, 5).map(alumno => `${alumno.Nombres} ${alumno.Apellidos}`), data: calificacionesTotalesAlumno.slice(0, 5).map(alumno => alumno.Total_Calificacion), createChart: createRadarChart },
+      { ref: chartRefs.fecha, labels: calificacionesPromedioFecha.slice(0, 5).map(fecha => `${fecha.Dia}/${fecha.Mes}/${fecha.Año}`), data: calificacionesPromedioFecha.slice(0, 5).map(fecha => fecha.Promedio_Calificacion), createChart: createBarChart },
+      { ref: chartRefs.totalesAlumno, labels: calificacionesTotalesAlumno.slice(0, 5).map(alumno => `${alumno.Nombres} ${alumno.Apellidos}`), data: calificacionesTotalesAlumno.slice(0, 5).map(alumno => alumno.Total_Calificacion), createChart: createBarChart },
       { ref: chartRefs.totalesAsignatura, labels: calificacionesTotalesAsignatura.slice(0, 5).map(asignatura => asignatura.Nombre_Asignatura), data: calificacionesTotalesAsignatura.slice(0, 5).map(asignatura => asignatura.Total_Calificacion), createChart: createBarChart },
-      { ref: chartRefs.top5Alumnos, labels: top5Alumnos.map(alumno => `${alumno.Nombres} ${alumno.Apellidos}`), data: top5Alumnos.map(alumno => alumno.Promedio_Calificacion), createChart: createLineChart },
-      { ref: chartRefs.top5Asignaturas, labels: top5Asignaturas.map(asignatura => asignatura.Nombre_Asignatura), data: top5Asignaturas.map(asignatura => asignatura.Promedio_Calificacion), createChart: createRadarChart },
+      { ref: chartRefs.top5Alumnos, labels: top5Alumnos.map(alumno => `${alumno.Nombres} ${alumno.Apellidos}`), data: top5Alumnos.map(alumno => alumno.Promedio_Calificacion), createChart: createBarChart },
+      { ref: chartRefs.top5Asignaturas, labels: top5Asignaturas.map(asignatura => asignatura.Nombre_Asignatura), data: top5Asignaturas.map(asignatura => asignatura.Promedio_Calificacion), createChart: createBarChart },
     ];
 
     const chartInstances = chartConfigs.map(config => config.createChart(config.ref, config.labels, config.data));
     return () => chartInstances.forEach(chart => chart && chart.destroy());
-  }, [calificacionesPromedioAlumno, calificacionesPromedioAsignatura, calificacionesPromedioGrado, calificacionesPromedioDocente, calificacionesPromedioFecha, calificacionesTotalesAlumno, calificacionesTotalesAsignatura, top5Alumnos, top5Asignaturas, chartRefs]);
+  }, );
 
   const generarReporte = async (chartRef, datos, titulo, fileName) => {
     if (chartRef.current) {
@@ -404,8 +328,6 @@ const Estadisticas = ({ rol }) => {
       </Container>
     </div>
   );
-  
-  
 };
 
 export default Estadisticas;
