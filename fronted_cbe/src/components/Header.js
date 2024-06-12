@@ -112,10 +112,11 @@ function Header() {
               </>
             )}
             {(userRol === 'Docente' || userRol === 'Administrador') && (
-              <NavDropdown title="Calificaciones" id="Calificaciones">
-                <NavDropdown.Item as={Link} to="/Calificación" className="link-unstyled">Registrar Calificación</NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/CalificaciónList" className="link-unstyled">Listar Calificación</NavDropdown.Item>
-              </NavDropdown>
+                <NavDropdown title="Calificación" id="Calificacion">
+                  <NavDropdown.Item as={Link} to="/Calificacion" className="link-unstyled">Registrar Calificación</NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to="/CalificacionList" className="link-unstyled">Listar Calificación</NavDropdown.Item>
+                </NavDropdown>
+
             )}
           </Nav>
         </Offcanvas.Body>
