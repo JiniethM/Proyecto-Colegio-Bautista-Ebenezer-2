@@ -5,6 +5,9 @@ import Chart from "chart.js/auto";
 import html2canvas from "html2canvas";
 import Header from "../components/Header";
 import portada from "../Imagenes/zyro-image (1).png";
+import emailjs from "emailjs-com";
+import * as XLSX from "xlsx";
+import { FaChartBar, FaEnvelope, FaFileExcel, FaFileAlt } from "react-icons/fa";
 
 const Estadisticas = ({ rol }) => {
   const [calificacionesPromedioAlumno, setCalificacionesPromedioAlumno] =
@@ -178,7 +181,7 @@ const Estadisticas = ({ rol }) => {
             datasets: [
               {
                 label: "Promedio de Calificaciones",
-                data: data.map((value) => parseFloat(value).toFixed(2)), // Redondear a 2 decimales
+                data: data.map((value) => parseFloat(value).toFixed(2)),
                 backgroundColor: colors,
                 borderColor: colors.map((color) => color.replace("0.2", "1")),
                 borderWidth: 1,
@@ -333,13 +336,69 @@ const Estadisticas = ({ rol }) => {
     chartRefs.top5Asignaturas,
   ]);
 
+  const formatearCalificaciones = (calificaciones, tipo) => {
+    return calificaciones
+      .map((calificacion) => {
+        let nombre = "";
+        if (tipo === "alumno") {
+          nombre = `${calificacion.Nombres || "Sin Nombre"} ${
+            calificacion.Apellidos || "Sin Apellido"
+          }`;
+        } else if (tipo === "asignatura") {
+          nombre = calificacion.Nombre_Asignatura || "Sin Nombre de Asignatura";
+        } else if (tipo === "grado") {
+          nombre = `Nombre de Grado: ${
+            calificacion.Plan_Estudio || "Sin Nombre de Grado"
+          }`;
+        } else if (tipo === "fecha") {
+          nombre =
+            `Fecha: ${calificacion.Dia}/${calificacion.Mes}/${calificacion.Año}` ||
+            "Sin Fecha";
+        }
+
+        const calificacionPromedio =
+          calificacion.Promedio_Calificacion || calificacion.Total_Calificacion;
+
+        return `${nombre}\nPromedio Calificación: ${parseFloat(
+          calificacionPromedio
+        ).toFixed(2)}`;
+      })
+      .join("\n\n");
+  };
+
+  const enviarCorreo = (calificaciones, titulo, tipo, fromName) => {
+    const calificacionesFormateadas = formatearCalificaciones(
+      calificaciones,
+      tipo
+    );
+
+    const data = {
+      to_name: "Diedrizon",
+      user_email: "diedrinzonfargas@gmail.com",
+      message: `${titulo}\n\n${calificacionesFormateadas}`,
+      from_name: fromName,
+      titulo: titulo,
+      mensaje: calificacionesFormateadas,
+    };
+
+    emailjs
+      .send("service_xzspcel", "template_lcsbfqx", data, "KEmZYqIQ5EQwin3nT")
+      .then((response) => {
+        alert("Correo enviado.");
+        console.log("Correo enviado.", response);
+      })
+      .catch((error) => {
+        alert("Error al enviar el correo.");
+        console.error("Error al enviar el correo:", error);
+      });
+  };
+
   const generarReporte = async (chartRef, datos, titulo, fileName) => {
     if (chartRef.current) {
       const canvas = await html2canvas(chartRef.current, { scale: 3 });
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF();
 
-      // Agregar imagen de portada
       const imgPortada = new Image();
       imgPortada.src = portada;
       imgPortada.onload = () => {
@@ -347,14 +406,13 @@ const Estadisticas = ({ rol }) => {
         const pageHeight = pdf.internal.pageSize.getHeight();
         pdf.addImage(imgPortada, "PNG", 0, 0, pageWidth, pageHeight);
         pdf.setFontSize(30);
-        pdf.setTextColor(23, 32, 42); // Color blanco para resaltar en la portada
+        pdf.setTextColor(23, 32, 42);
         pdf.text(titulo, pageWidth / 2, pageHeight / 2, { align: "center" });
 
-        // Agregar una nueva página para el gráfico y los datos
         pdf.addPage();
         pdf.addImage(imgData, "PNG", 10, 20, 180, 150);
         pdf.setFontSize(12);
-        pdf.setTextColor(0, 0, 0); // Color negro para el texto de los datos
+        pdf.setTextColor(0, 0, 0);
 
         let y = 180;
         datos.forEach((dato) => {
@@ -368,13 +426,11 @@ const Estadisticas = ({ rol }) => {
           pdf.text(`${nombre}: ${parseFloat(calificacion).toFixed(2)}`, 10, y);
           y += 10;
           if (y > 280) {
-            // Ajusta si el contenido supera el límite de la página
             pdf.addPage();
             y = 20;
           }
         });
 
-        // Reducir el tamaño del PDF manteniendo la calidad
         const finalPDF = pdf.output("blob");
         const compressedPDF = new Blob([finalPDF], { type: "application/pdf" });
 
@@ -386,6 +442,41 @@ const Estadisticas = ({ rol }) => {
     }
   };
 
+  const exportarAExcel = (datos, nombreArchivo) => {
+    const worksheet = XLSX.utils.json_to_sheet(datos);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Datos");
+    XLSX.writeFile(workbook, `${nombreArchivo}.xlsx`);
+  };
+
+  const styleDivLine = {
+    borderTop: "1px solid #ccc",
+    margin: "10px 0",
+  };
+
+  const buttonContainerStyle = {
+    display: "flex",
+    justifyContent: "space-around",
+    marginTop: "10px",
+  };
+
+  const exportarATXT = (datos, nombreArchivo) => {
+    const txtData = datos
+      .map((row) =>
+        Object.entries(row)
+          .map(([key, value]) => `${key}: ${value}`)
+          .join("\n")
+      )
+      .join("\n\n");
+
+    const txtBlob = new Blob([txtData], { type: "text/plain" });
+    const txtUrl = URL.createObjectURL(txtBlob);
+    const link = document.createElement("a");
+    link.href = txtUrl;
+    link.download = `${nombreArchivo}.txt`;
+    link.click();
+  };
+
   return (
     <div>
       <Header rol={rol} />
@@ -393,240 +484,600 @@ const Estadisticas = ({ rol }) => {
         <Row>
           <Col xs={12} sm={12} md={12} lg={6} className="mb-4">
             <Card className="h-100 d-flex flex-column">
-              <Card.Body className="d-flex flex-column">
-                <Card.Title>Calificaciones Promedio por Alumno</Card.Title>
-                <canvas ref={chartRefs.alumno} height="150"></canvas>
-                <div className="mt-auto">
-                  <Button
-                    variant="primary"
-                    onClick={() =>
-                      generarReporte(
-                        chartRefs.alumno,
-                        calificacionesPromedioAlumno,
-                        "Calificaciones Promedio por Alumno",
-                        "reporte_calificaciones_alumno"
-                      )
-                    }
-                    className="mt-2"
-                  >
-                    Descargar Reporte
-                  </Button>
+              <Card.Body className="d-flex flex-column justify-content-between">
+                <div>
+                  <Card.Title>Calificaciones Promedio por Alumno</Card.Title>
+                  <canvas ref={chartRefs.alumno} height="150"></canvas>
+                </div>
+                <div>
+                  <div style={styleDivLine}></div>
+                  <div style={buttonContainerStyle}>
+                    <Button
+                      variant="primary"
+                      onClick={() =>
+                        generarReporte(
+                          chartRefs.alumno,
+                          calificacionesPromedioAlumno,
+                          "Calificaciones Promedio por Alumno",
+                          "reporte_calificaciones_alumno"
+                        )
+                      }
+                    >
+                      <FaChartBar style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() =>
+                        enviarCorreo(
+                          calificacionesPromedioAlumno,
+                          "Calificaciones Promedio por Alumno",
+                          "alumno",
+                          "Reporte Calificaciones por Alumno"
+                        )
+                      }
+                    >
+                      <FaEnvelope style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="success"
+                      onClick={() =>
+                        exportarAExcel(
+                          calificacionesPromedioAlumno,
+                          "reporte_calificaciones_alumno"
+                        )
+                      }
+                    >
+                      <FaFileExcel style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="info"
+                      onClick={() =>
+                        exportarATXT(
+                          calificacionesPromedioAlumno,
+                          "reporte_calificaciones_alumno"
+                        )
+                      }
+                    >
+                      <FaFileAlt style={{ color: "white" }} />
+                    </Button>
+
+                    
+                  </div>
                 </div>
               </Card.Body>
             </Card>
           </Col>
+
           <Col xs={12} sm={12} md={12} lg={6} className="mb-4">
             <Card className="h-100 d-flex flex-column">
-              <Card.Body className="d-flex flex-column">
-                <Card.Title>Calificaciones Promedio por Asignatura</Card.Title>
-                <canvas ref={chartRefs.asignatura} height="150"></canvas>
-                <div className="mt-auto">
-                  <Button
-                    variant="primary"
-                    onClick={() =>
-                      generarReporte(
-                        chartRefs.asignatura,
-                        calificacionesPromedioAsignatura,
-                        "Calificaciones Promedio por Asignatura",
-                        "reporte_calificaciones_asignatura"
-                      )
-                    }
-                    className="mt-2"
-                  >
-                    Descargar Reporte
-                  </Button>
+              <Card.Body className="d-flex flex-column justify-content-between">
+                <div>
+                  <Card.Title>
+                    Calificaciones Promedio por Asignatura
+                  </Card.Title>
+                  <canvas ref={chartRefs.asignatura} height="150"></canvas>
+                </div>
+                <div>
+                  <div style={styleDivLine}></div>
+                  <div style={buttonContainerStyle}>
+                    <Button
+                      variant="primary"
+                      onClick={() =>
+                        generarReporte(
+                          chartRefs.asignatura,
+                          calificacionesPromedioAsignatura,
+                          "Calificaciones Promedio por Asignatura",
+                          "reporte_calificaciones_asignatura"
+                        )
+                      }
+                    >
+                      <FaChartBar style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() =>
+                        enviarCorreo(
+                          calificacionesPromedioAsignatura,
+                          "Calificaciones Promedio por Asignatura",
+                          "asignatura",
+                          "Reporte Calificaciones por Asignatura"
+                        )
+                      }
+                    >
+                      <FaEnvelope style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="success"
+                      onClick={() =>
+                        exportarAExcel(
+                          calificacionesPromedioAsignatura,
+                          "reporte_calificaciones_asignatura"
+                        )
+                      }
+                    >
+                      <FaFileExcel style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="info"
+                      onClick={() =>
+                        exportarATXT(
+                          calificacionesPromedioAsignatura,
+                          "reporte_calificaciones_asignatura"
+                        )
+                      }
+                    >
+                      <FaFileAlt style={{ color: "white" }} />
+                    </Button>
+                  </div>
                 </div>
               </Card.Body>
             </Card>
           </Col>
+
           <Col xs={12} sm={12} md={12} lg={6} className="mb-4">
             <Card className="h-100 d-flex flex-column">
-              <Card.Body className="d-flex flex-column">
-                <Card.Title>Calificaciones Promedio por Grado</Card.Title>
-                <canvas ref={chartRefs.grado} height="150"></canvas>
-                <div className="mt-auto">
-                  <Button
-                    variant="primary"
-                    onClick={() =>
-                      generarReporte(
-                        chartRefs.grado,
-                        calificacionesPromedioGrado,
-                        "Calificaciones Promedio por Grado",
-                        "reporte_calificaciones_grado"
-                      )
-                    }
-                    className="mt-2"
-                  >
-                    Descargar Reporte
-                  </Button>
+              <Card.Body className="d-flex flex-column justify-content-between">
+                <div>
+                  <Card.Title>Calificaciones Promedio por Grado</Card.Title>
+                  <canvas ref={chartRefs.grado} height="150"></canvas>
+                </div>
+                <div>
+                  <div style={styleDivLine}></div>
+                  <div style={buttonContainerStyle}>
+                    <Button
+                      variant="primary"
+                      onClick={() =>
+                        generarReporte(
+                          chartRefs.grado,
+                          calificacionesPromedioGrado,
+                          "Calificaciones Promedio por Grado",
+                          "reporte_calificaciones_grado"
+                        )
+                      }
+                    >
+                      <FaChartBar style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() =>
+                        enviarCorreo(
+                          calificacionesPromedioGrado,
+                          "Calificaciones Promedio por Grado",
+                          "grado",
+                          "Reporte Calificaciones por Grado"
+                        )
+                      }
+                    >
+                      <FaEnvelope style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="success"
+                      onClick={() =>
+                        exportarAExcel(
+                          calificacionesPromedioGrado,
+                          "reporte_calificaciones_grado"
+                        )
+                      }
+                    >
+                      <FaFileExcel style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="info"
+                      onClick={() =>
+                        exportarATXT(
+                          calificacionesPromedioGrado,
+                          "reporte_calificaciones_grado"
+                        )
+                      }
+                    >
+                      <FaFileAlt style={{ color: "white" }} />
+                    </Button>
+                  </div>
                 </div>
               </Card.Body>
             </Card>
           </Col>
+
           <Col xs={12} sm={12} md={12} lg={6} className="mb-4">
             <Card className="h-100 d-flex flex-column">
-              <Card.Body className="d-flex flex-column">
-                <Card.Title>Calificaciones Promedio por Docente</Card.Title>
-                <canvas ref={chartRefs.docente} height="150"></canvas>
-                <div className="mt-auto">
-                  <Button
-                    variant="primary"
-                    onClick={() =>
-                      generarReporte(
-                        chartRefs.docente,
-                        calificacionesPromedioDocente,
-                        "Calificaciones Promedio por Docente",
-                        "reporte_calificaciones_docente"
-                      )
-                    }
-                    className="mt-2"
-                  >
-                    Descargar Reporte
-                  </Button>
+              <Card.Body className="d-flex flex-column justify-content-between">
+                <div>
+                  <Card.Title>Calificaciones Promedio por Docente</Card.Title>
+                  <canvas ref={chartRefs.docente} height="150"></canvas>
+                </div>
+                <div>
+                  <div style={styleDivLine}></div>
+                  <div style={buttonContainerStyle}>
+                    <Button
+                      variant="primary"
+                      onClick={() =>
+                        generarReporte(
+                          chartRefs.docente,
+                          calificacionesPromedioDocente,
+                          "Calificaciones Promedio por Docente",
+                          "reporte_calificaciones_docente"
+                        )
+                      }
+                    >
+                      <FaChartBar style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() =>
+                        enviarCorreo(
+                          calificacionesPromedioDocente,
+                          "Calificaciones Promedio por Docente",
+                          "docente",
+                          "Reporte Calificaciones por Docente"
+                        )
+                      }
+                    >
+                      <FaEnvelope style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="success"
+                      onClick={() =>
+                        exportarAExcel(
+                          calificacionesPromedioDocente,
+                          "reporte_calificaciones_docente"
+                        )
+                      }
+                    >
+                      <FaFileExcel style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="info"
+                      onClick={() =>
+                        exportarATXT(
+                          calificacionesPromedioDocente,
+                          "reporte_calificaciones_docente"
+                        )
+                      }
+                    >
+                      <FaFileAlt style={{ color: "white" }} />
+                    </Button>
+                  </div>
                 </div>
               </Card.Body>
             </Card>
           </Col>
+
           <Col xs={12} sm={12} md={12} lg={6} className="mb-4">
             <Card className="h-100 d-flex flex-column">
-              <Card.Body className="d-flex flex-column">
-                <Card.Title>Calificaciones Promedio por Fecha</Card.Title>
-                <canvas ref={chartRefs.fecha} height="150"></canvas>
-                <div className="mt-auto">
-                  <Button
-                    variant="primary"
-                    onClick={() =>
-                      generarReporte(
-                        chartRefs.fecha,
-                        calificacionesPromedioFecha,
-                        "Calificaciones Promedio por Fecha",
-                        "reporte_calificaciones_fecha"
-                      )
-                    }
-                    className="mt-2"
-                  >
-                    Descargar Reporte
-                  </Button>
+              <Card.Body className="d-flex flex-column justify-content-between">
+                <div>
+                  <Card.Title>Calificaciones Promedio por Fecha</Card.Title>
+                  <canvas ref={chartRefs.fecha} height="150"></canvas>
+                </div>
+                <div>
+                  <div style={styleDivLine}></div>
+                  <div style={buttonContainerStyle}>
+                    <Button
+                      variant="primary"
+                      onClick={() =>
+                        generarReporte(
+                          chartRefs.fecha,
+                          calificacionesPromedioFecha,
+                          "Calificaciones Promedio por Fecha",
+                          "reporte_calificaciones_fecha"
+                        )
+                      }
+                    >
+                      <FaChartBar style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() =>
+                        enviarCorreo(
+                          calificacionesPromedioFecha,
+                          "Calificaciones Promedio por Fecha",
+                          "fecha",
+                          "Reporte Calificaciones por Fecha"
+                        )
+                      }
+                    >
+                      <FaEnvelope style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="success"
+                      onClick={() =>
+                        exportarAExcel(
+                          calificacionesPromedioFecha,
+                          "reporte_calificaciones_fecha"
+                        )
+                      }
+                    >
+                      <FaFileExcel style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="info"
+                      onClick={() =>
+                        exportarATXT(
+                          calificacionesPromedioFecha,
+                          "reporte_calificaciones_fecha"
+                        )
+                      }
+                    >
+                      <FaFileAlt style={{ color: "white" }} />
+                    </Button>
+                  </div>
                 </div>
               </Card.Body>
             </Card>
           </Col>
+
           <Col xs={12} sm={12} md={12} lg={6} className="mb-4">
             <Card className="h-100 d-flex flex-column">
-              <Card.Body className="d-flex flex-column">
-                <Card.Title>Calificaciones Totales por Alumno</Card.Title>
-                <Form.Group controlId="formYear">
-                  <Form.Label>Año</Form.Label>
-                  <Form.Control
-                    type="number"
-                    value={year}
-                    onChange={(e) => setYear(e.target.value)}
-                  />
-                </Form.Group>
-                <canvas ref={chartRefs.totalesAlumno} height="150"></canvas>
-                <div className="mt-auto">
-                  <Button
-                    variant="primary"
-                    onClick={() =>
-                      generarReporte(
-                        chartRefs.totalesAlumno,
-                        calificacionesTotalesAlumno,
-                        `Calificaciones Totales por Alumno en ${year}`,
-                        `reporte_calificaciones_totales_alumno_${year}`
-                      )
-                    }
-                    className="mt-2"
-                  >
-                    Descargar Reporte
-                  </Button>
+              <Card.Body className="d-flex flex-column justify-content-between">
+                <div>
+                  <Card.Title>Calificaciones Totales por Alumno</Card.Title>
+                  <Form.Group controlId="formYear">
+                    <Form.Label>Año</Form.Label>
+                    <Form.Control
+                      type="number"
+                      value={year}
+                      onChange={(e) => setYear(e.target.value)}
+                    />
+                  </Form.Group>
+                  <canvas ref={chartRefs.totalesAlumno} height="150"></canvas>
+                </div>
+                <div>
+                  <div style={styleDivLine}></div>
+                  <div style={buttonContainerStyle}>
+                    <Button
+                      variant="primary"
+                      onClick={() =>
+                        generarReporte(
+                          chartRefs.totalesAlumno,
+                          calificacionesTotalesAlumno,
+                          `Calificaciones Totales por Alumno en ${year}`,
+                          `reporte_calificaciones_totales_alumno_${year}`
+                        )
+                      }
+                    >
+                      <FaChartBar style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() =>
+                        enviarCorreo(
+                          calificacionesTotalesAlumno,
+                          `Calificaciones Totales por Alumno en ${year}`,
+                          "alumno",
+                          `Reporte Calificaciones por Alumno en ${year}`
+                        )
+                      }
+                    >
+                      <FaEnvelope style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="success"
+                      onClick={() =>
+                        exportarAExcel(
+                          calificacionesTotalesAlumno,
+                          `reporte_calificaciones_totales_alumno_${year}`
+                        )
+                      }
+                    >
+                      <FaFileExcel style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="info"
+                      onClick={() =>
+                        exportarATXT(
+                          calificacionesTotalesAlumno,
+                          `reporte_calificaciones_totales_alumno_${year}`
+                        )
+                      }
+                    >
+                      <FaFileAlt style={{ color: "white" }} />
+                    </Button>
+                  </div>
                 </div>
               </Card.Body>
             </Card>
           </Col>
+
           <Col xs={12} sm={12} md={12} lg={6} className="mb-4">
             <Card className="h-100 d-flex flex-column">
-              <Card.Body className="d-flex flex-column">
-                <Card.Title>Calificaciones Totales por Asignatura</Card.Title>
-                <Form.Group controlId="formYear">
-                  <Form.Label>Año</Form.Label>
-                  <Form.Control
-                    type="number"
-                    value={year}
-                    onChange={(e) => setYear(e.target.value)}
-                  />
-                </Form.Group>
-                <Form.Group controlId="formMonth">
-                  <Form.Label>Mes</Form.Label>
-                  <Form.Control
-                    type="number"
-                    value={month}
-                    onChange={(e) => setMonth(e.target.value)}
-                  />
-                </Form.Group>
-                <canvas ref={chartRefs.totalesAsignatura} height="150"></canvas>
-                <div className="mt-auto">
-                  <Button
-                    variant="primary"
-                    onClick={() =>
-                      generarReporte(
-                        chartRefs.totalesAsignatura,
-                        calificacionesTotalesAsignatura,
-                        `Calificaciones Totales por Asignatura en ${month}/${year}`,
-                        `reporte_calificaciones_totales_asignatura_${year}_${month}`
-                      )
-                    }
-                    className="mt-2"
-                  >
-                    Descargar Reporte
-                  </Button>
+              <Card.Body className="d-flex flex-column justify-content-between">
+                <div>
+                  <Card.Title>Calificaciones Totales por Asignatura</Card.Title>
+                  <Form.Group controlId="formYear">
+                    <Form.Label>Año</Form.Label>
+                    <Form.Control
+                      type="number"
+                      value={year}
+                      onChange={(e) => setYear(e.target.value)}
+                    />
+                  </Form.Group>
+                  <Form.Group controlId="formMonth">
+                    <Form.Label>Mes</Form.Label>
+                    <Form.Control
+                      type="number"
+                      value={month}
+                      onChange={(e) => setMonth(e.target.value)}
+                    />
+                  </Form.Group>
+                  <canvas
+                    ref={chartRefs.totalesAsignatura}
+                    height="150"
+                  ></canvas>
+                </div>
+                <div>
+                  <div style={styleDivLine}></div>
+                  <div style={buttonContainerStyle}>
+                    <Button
+                      variant="primary"
+                      onClick={() =>
+                        generarReporte(
+                          chartRefs.totalesAsignatura,
+                          calificacionesTotalesAsignatura,
+                          `Calificaciones Totales por Asignatura en ${month}/${year}`,
+                          `reporte_calificaciones_totales_asignatura_${year}_${month}`
+                        )
+                      }
+                    >
+                      <FaChartBar style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() =>
+                        enviarCorreo(
+                          calificacionesTotalesAsignatura,
+                          `Calificaciones Totales por Asignatura en ${month}/${year}`,
+                          "asignatura",
+                          `Reporte Calificaciones por Asignatura en ${month}/${year}`
+                        )
+                      }
+                    >
+                      <FaEnvelope style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="success"
+                      onClick={() =>
+                        exportarAExcel(
+                          calificacionesTotalesAsignatura,
+                          `reporte_calificaciones_totales_asignatura_${year}_${month}`
+                        )
+                      }
+                    >
+                      <FaFileExcel style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="info"
+                      onClick={() =>
+                        exportarATXT(
+                          calificacionesTotalesAsignatura,
+                          `reporte_calificaciones_totales_asignatura_${year}_${month}`
+                        )
+                      }
+                    >
+                      <FaFileAlt style={{ color: "white" }} />
+                    </Button>
+                  </div>
                 </div>
               </Card.Body>
             </Card>
           </Col>
+
           <Col xs={12} sm={12} md={12} lg={6} className="mb-4">
             <Card className="h-100 d-flex flex-column">
-              <Card.Body className="d-flex flex-column">
-                <Card.Title>Top 5 Alumnos</Card.Title>
-                <canvas ref={chartRefs.top5Alumnos} height="150"></canvas>
-                <div className="mt-auto">
-                  <Button
-                    variant="primary"
-                    onClick={() =>
-                      generarReporte(
-                        chartRefs.top5Alumnos,
-                        top5Alumnos,
-                        "Top 5 Alumnos",
-                        "reporte_top5_alumnos"
-                      )
-                    }
-                    className="mt-2"
-                  >
-                    Descargar Reporte
-                  </Button>
+              <Card.Body className="d-flex flex-column justify-content-between">
+                <div>
+                  <Card.Title>Top 5 Alumnos</Card.Title>
+                  <canvas ref={chartRefs.top5Alumnos} height="150"></canvas>
+                </div>
+                <div>
+                  <div style={styleDivLine}></div>
+                  <div style={buttonContainerStyle}>
+                    <Button
+                      variant="primary"
+                      onClick={() =>
+                        generarReporte(
+                          chartRefs.top5Alumnos,
+                          top5Alumnos,
+                          "Top 5 Alumnos",
+                          "reporte_top5_alumnos"
+                        )
+                      }
+                    >
+                      <FaChartBar style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() =>
+                        enviarCorreo(
+                          top5Alumnos,
+                          "Top 5 Alumnos",
+                          "alumno",
+                          "Reporte Top 5 Alumnos"
+                        )
+                      }
+                    >
+                      <FaEnvelope style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="success"
+                      onClick={() =>
+                        exportarAExcel(top5Alumnos, "reporte_top5_alumnos")
+                      }
+                    >
+                      <FaFileExcel style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="info"
+                      onClick={() =>
+                        exportarATXT(top5Alumnos, "reporte_top5_alumnos")
+                      }
+                    >
+                      <FaFileAlt style={{ color: "white" }} />
+                    </Button>
+                  </div>
                 </div>
               </Card.Body>
             </Card>
           </Col>
+
           <Col xs={12} sm={12} md={12} lg={6} className="mb-4">
             <Card className="h-100 d-flex flex-column">
-              <Card.Body className="d-flex flex-column">
-                <Card.Title>Top 5 Asignaturas</Card.Title>
-                <canvas ref={chartRefs.top5Asignaturas} height="150"></canvas>
-                <div className="mt-auto">
-                  <Button
-                    variant="primary"
-                    onClick={() =>
-                      generarReporte(
-                        chartRefs.top5Asignaturas,
-                        top5Asignaturas,
-                        "Top 5 Asignaturas",
-                        "reporte_top5_asignaturas"
-                      )
-                    }
-                    className="mt-2"
-                  >
-                    Descargar Reporte
-                  </Button>
+              <Card.Body className="d-flex flex-column justify-content-between">
+                <div>
+                  <Card.Title>Top 5 Asignaturas</Card.Title>
+                  <canvas ref={chartRefs.top5Asignaturas} height="150"></canvas>
+                </div>
+                <div>
+                  <div style={styleDivLine}></div>
+                  <div style={buttonContainerStyle}>
+                    <Button
+                      variant="primary"
+                      onClick={() =>
+                        generarReporte(
+                          chartRefs.top5Asignaturas,
+                          top5Asignaturas,
+                          "Top 5 Asignaturas",
+                          "reporte_top5_asignaturas"
+                        )
+                      }
+                    >
+                      <FaChartBar style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() =>
+                        enviarCorreo(
+                          top5Asignaturas,
+                          "Top 5 Asignaturas",
+                          "asignatura",
+                          "Reporte Top 5 Asignaturas"
+                        )
+                      }
+                    >
+                      <FaEnvelope style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="success"
+                      onClick={() =>
+                        exportarAExcel(
+                          top5Asignaturas,
+                          "reporte_top5_asignaturas"
+                        )
+                      }
+                    >
+                      <FaFileExcel style={{ color: "white" }} />
+                    </Button>
+                    <Button
+                      variant="info"
+                      onClick={() =>
+                        exportarATXT(
+                          top5Asignaturas,
+                          "reporte_top5_asignaturas"
+                        )
+                      }
+                    >
+                      <FaFileAlt style={{ color: "white" }} />
+                    </Button>
+                  </div>
                 </div>
               </Card.Body>
             </Card>

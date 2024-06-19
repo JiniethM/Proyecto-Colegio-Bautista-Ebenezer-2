@@ -1,40 +1,20 @@
 import React, { useState } from 'react';
 import { Form, Button, Card, Container, Row, Col, FloatingLabel } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { authenticateUser } from '../CajaBlanca/autenticacion';
 
 const Login = ({ setRol }) => {
   const navigate = useNavigate();
-
   const [nombre_Usuario, setNombre_Usuario] = useState('');
   const [contrasena, setContrasena] = useState('');
-  const [mensaje, setMensaje] = useState('');  // Estado para manejar el mensaje
+  const [mensaje, setMensaje] = useState('');
 
   const handleSubmit = async event => {
     event.preventDefault();
-    const formData = { nombre_Usuario, contrasena };
-
-    try {
-      const response = await fetch('http://localhost:5000/crud/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (response.ok) {
-        const { rol } = await response.json();
-        setRol(rol);
-        localStorage.setItem('userRol', rol);
-        setMensaje('El usuario se ha iniciado sesión exitosamente'); // Establece el mensaje de éxito
-        navigate('/Home');
-      } else {
-        console.log('Credenciales incorrectas');
-        setMensaje('¡Credenciales incorrectas!');  // Actualiza el mensaje de error
-      }
-    } catch (error) {
-      console.error('Error en la solicitud: ', error);
-      setMensaje('Error al procesar la solicitud');  // Mensaje en caso de error de solicitud
+    const mensaje = await authenticateUser(nombre_Usuario, contrasena, setRol);
+    setMensaje(mensaje);
+    if (mensaje === 'El usuario se ha iniciado sesión exitosamente') {
+      navigate('/Home');
     }
   };
 
@@ -124,7 +104,7 @@ const Login = ({ setRol }) => {
                   </Button>
                 </div>
                 {mensaje && (
-                  <div style={{ color: 'red', marginTop: '10px' }}>{mensaje}</div>  // Muestra el mensaje bajo el botón
+                  <div style={{ color: 'red', marginTop: '10px' }}>{mensaje}</div>
                 )}
               </Form>
             </Card.Body>

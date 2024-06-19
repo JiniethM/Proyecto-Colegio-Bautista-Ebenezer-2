@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import '../styles/App.css';
 import AsignaturaList from './AsignaturaList';
 import AlumnoList from './AlumnoList';
+import { registrarCalificacion } from '../ValidacionesCN/registrarCalificacion';
 
 function Calificacion() {
     const [p_Calificacion_Obtenida, setp_Calificacion_Obtenida] = useState('');
@@ -32,37 +33,23 @@ function Calificacion() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const formData = {
+        const mensaje = await registrarCalificacion(
             p_Calificacion_Obtenida,
             p_Fecha_Calificacion,
-            p_ID_Alumno: selectedAlumno.ID_Alumno,
-            p_ID_Asignatura: selectedAsignatura.ID_Asignatura,
-            p_Corte_Evaluativo,
-        };
+            selectedAlumno.ID_Alumno,
+            selectedAsignatura.ID_Asignatura,
+            p_Corte_Evaluativo
+        );
 
-        try {
-            const response = await fetch('http://localhost:5000/crud/createCalificacion', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
+        alert(mensaje);
 
-            if (response.ok) {
-                alert('Calificación guardada y reflejada correctamente.');
-                setp_Calificacion_Obtenida('');
-                setp_Fecha_Calificacion('');
-                setp_Corte_Evaluativo('');
-                setselectedAlumno({});
-                setselectedAsignatura({});
-                setMensajeCalificacion('');
-            } else {
-                alert('Error al registrar la calificación');
-            }
-        } catch (error) {
-            console.error('Error en la solicitud:', error);
-            alert('Error en la solicitud al servidor');
+        if (mensaje === 'Calificación guardada y reflejada correctamente.') {
+            setp_Calificacion_Obtenida('');
+            setp_Fecha_Calificacion('');
+            setp_Corte_Evaluativo('');
+            setselectedAlumno({});
+            setselectedAsignatura({});
+            setMensajeCalificacion('');
         }
     };
 

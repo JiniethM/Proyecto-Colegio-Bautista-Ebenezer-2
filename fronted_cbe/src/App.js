@@ -21,7 +21,7 @@ import PagoColegiaturaList from './pages/PagoColegiaturaList';
 import Calificacion from './pages/Calificacion';
 import CalificacionList from './pages/CalificacionList';
 import Estadisticas from './pages/Estadisticas';
-import Reportes from './pages/Reportes';  // Asegúrate de que esta ruta esté correcta
+import Reportes from './pages/Reportes'; 
 
 function App() {
   const [userRol, setUserRol] = useState('');
