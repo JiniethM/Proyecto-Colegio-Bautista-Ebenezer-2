@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Container, FloatingLabel, Card, Button, Modal } from 'react-bootstrap';
+import { FaPlus } from 'react-icons/fa';
 import Header from '../components/Header';
 import '../styles/App.css';
 import AlumnoList from './AlumnoList';
@@ -8,12 +9,13 @@ function Matricula() {
     const [Anio_Escolar, setAnio_Escolar] = useState('');
     const [ID_Grado, setID_Grado] = useState('');
     const [Tipo_Matricula, setTipo_Matricula] = useState('');
-    const [ID_Alumno, setID_Alumno] = useState('');
+    
 
     const [showAlumnoListModal, setShowAlumnoListModal] = useState(false);
     const [selectedAlumno, setselectedAlumno] = useState({});
 
     const [matriculas, setMatriculas] = useState([]);
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         fetch('http://localhost:5000/crud/ComboGrado')
@@ -26,8 +28,37 @@ function Matricula() {
             });
     }, []);
 
+    const displayError = (field, message) => {
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            [field]: message,
+        }));
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrors({});
+
+        if (!Anio_Escolar) {
+            displayError("Anio_Escolar", "Debe seleccionar un año escolar");
+            return;
+        }
+
+        if (!ID_Grado) {
+            displayError("ID_Grado", "Debe seleccionar un grado");
+            return;
+        }
+
+        if (!Tipo_Matricula) {
+            displayError("Tipo_Matricula", "Debe seleccionar un tipo de matrícula");
+            return;
+        }
+
+        if (!selectedAlumno.ID_Alumno) {
+            displayError("ID_Alumno", "Debe seleccionar un alumno");
+            return;
+        }
+
         const formData = {
             Anio_Escolar,
             ID_Grado,
@@ -51,7 +82,7 @@ function Matricula() {
                 setAnio_Escolar('');
                 setID_Grado('');
                 setTipo_Matricula('');
-                setID_Alumno('');
+                setselectedAlumno({});
             } else {
                 alert('Error al registrar Matricula');  
             }
@@ -60,6 +91,11 @@ function Matricula() {
             console.error('Error en la solicitud:', error);
             alert('Error en la solicitud al servidor');
         }
+    };
+
+    const handleAlumnoSelect = (alumno) => {
+        setselectedAlumno(alumno);
+        setShowAlumnoListModal(false);
     };
 
     return (
@@ -77,6 +113,7 @@ function Matricula() {
                                             aria-label="Año_Escolar"
                                             value={Anio_Escolar}
                                             onChange={(e) => setAnio_Escolar(e.target.value)}
+                                            isInvalid={!!errors.Anio_Escolar}
                                         >
                                             <option>Seleccione el Año_Escolar</option>
                                             <option value="2022">2022</option>
@@ -86,6 +123,9 @@ function Matricula() {
                                             <option value="2026">2026</option>
                                             <option value="2027">2027</option>
                                         </Form.Select>
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.Anio_Escolar}
+                                        </Form.Control.Feedback>
                                     </FloatingLabel>
                                 </Col>
 
@@ -95,6 +135,7 @@ function Matricula() {
                                             aria-label="ID_Grado"
                                             value={ID_Grado}
                                             onChange={(e) => setID_Grado(e.target.value)}
+                                            isInvalid={!!errors.ID_Grado}
                                         >
                                             <option>Seleccione el grado</option>
                                             {matriculas.map((matricula) => (
@@ -103,6 +144,9 @@ function Matricula() {
                                                 </option>
                                             ))}
                                         </Form.Select>
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.ID_Grado}
+                                        </Form.Control.Feedback>
                                     </FloatingLabel>
                                 </Col>
 
@@ -112,15 +156,19 @@ function Matricula() {
                                             aria-label="Tipo_Matricula"
                                             value={Tipo_Matricula}
                                             onChange={(e) => setTipo_Matricula(e.target.value)}
+                                            isInvalid={!!errors.Tipo_Matricula}
                                         >
                                             <option value="">Seleccione el tipo de matrícula</option>
                                             <option value="Nuevo Ingreso">Nuevo Ingreso</option>
                                             <option value="Reingreso">Reingreso</option>
                                         </Form.Select>
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.Tipo_Matricula}
+                                        </Form.Control.Feedback>
                                     </FloatingLabel>
                                 </Col>
 
-                                <Col sm="6" md="6" lg="6">
+                                <Col sm="6" md="6" lg="6" style={{ position: "relative" }}>
                                     <FloatingLabel controlId="IdAlumno" label="Alumno">
                                         <Form.Control
                                             type="text"
@@ -130,9 +178,26 @@ function Matricula() {
                                                     : ''
                                             }
                                             disabled
+                                            isInvalid={!!errors.ID_Alumno}
                                         />
-                                        <Button variant="primary" onClick={() => setShowAlumnoListModal(true)}>
-                                            Seleccionar Alumno
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.ID_Alumno}
+                                        </Form.Control.Feedback>
+                                        <Button
+                                            variant="primary"
+                                            onClick={() => setShowAlumnoListModal(true)}
+                                            style={{
+                                                position: "absolute",
+                                                top: "50%",
+                                                transform: "translateY(-50%)",
+                                                right: "10px",
+                                                padding: "0.375rem 0.75rem",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center"
+                                            }}
+                                        >
+                                            <FaPlus />
                                         </Button>
                                     </FloatingLabel>
                                 </Col>
@@ -151,7 +216,7 @@ function Matricula() {
                     <Modal.Title>Seleccionar Alumno</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <AlumnoList handleAlumnoSelect={setselectedAlumno} />
+                    <AlumnoList handleAlumnoSelect={handleAlumnoSelect} />
                 </Modal.Body>
             </Modal>
         </div>

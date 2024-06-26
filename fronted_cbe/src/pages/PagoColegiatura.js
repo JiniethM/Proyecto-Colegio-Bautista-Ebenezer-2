@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Row, Col, Container, FloatingLabel, Card, Button, Modal } from 'react-bootstrap';
+import { FaPlus } from 'react-icons/fa'; // Import the icon
 import Header from '../components/Header';
 import '../styles/App.css';
 import AlumnoList from './AlumnoList';
@@ -10,6 +11,7 @@ function PagoColegiatura() {
     const [nivelEducativo, setNivelEducativo] = useState('');
     const [selectedAlumno, setSelectedAlumno] = useState({});
     const [showAlumnoListModal, setShowAlumnoListModal] = useState(false);
+    const [errors, setErrors] = useState({});
 
     // Precios por nivel educativo
     const precios = {
@@ -25,16 +27,40 @@ function PagoColegiatura() {
         setMonto(precios[nivel]);
     };
 
+    const displayError = (field, message) => {
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            [field]: message,
+        }));
+    };
+
     // Función para manejar el envío del formulario
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!monto || !fechaPago || !selectedAlumno.ID_Alumno) {
-            alert('Por favor complete todos los campos requeridos.');
+        setErrors({});
+
+        if (!nivelEducativo) {
+            displayError("nivelEducativo", "Debe seleccionar un nivel educativo");
+            return;
+        }
+
+        if (!monto) {
+            displayError("monto", "El campo Monto es obligatorio");
             return;
         }
 
         if (isNaN(parseFloat(monto)) || parseFloat(monto) < precios[nivelEducativo]) {
-            alert(`Ingrese un monto válido para el nivel ${nivelEducativo}. Monto mínimo: ${precios[nivelEducativo]}`);
+            displayError("monto", `Ingrese un monto válido para el nivel ${nivelEducativo}. Monto mínimo: ${precios[nivelEducativo]}`);
+            return;
+        }
+
+        if (!fechaPago) {
+            displayError("fechaPago", "El campo Fecha de Pago es obligatorio");
+            return;
+        }
+
+        if (!selectedAlumno.ID_Alumno) {
+            displayError("ID_Alumno", "Debe seleccionar un alumno");
             return;
         }
 
@@ -82,12 +108,15 @@ function PagoColegiatura() {
                             <Row className="g-3">
                                 <Col sm="6" md="6" lg="6">
                                     <FloatingLabel controlId="nivelEducativo" label="Nivel Educativo">
-                                        <Form.Select value={nivelEducativo} onChange={handleNivelEducativoChange}>
+                                        <Form.Select value={nivelEducativo} onChange={handleNivelEducativoChange} isInvalid={!!errors.nivelEducativo}>
                                             <option value="">Seleccione Nivel Educativo</option>
                                             <option value="Prescolar">Prescolar</option>
                                             <option value="Primaria">Primaria</option>
                                             <option value="Secundaria">Secundaria</option>
                                         </Form.Select>
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.nivelEducativo}
+                                        </Form.Control.Feedback>
                                     </FloatingLabel>
                                 </Col>
                                 <Col sm="6" md="6" lg="6">
@@ -98,7 +127,11 @@ function PagoColegiatura() {
                                             value={monto}
                                             onChange={(e) => setMonto(e.target.value)}
                                             readOnly
+                                            isInvalid={!!errors.monto}
                                         />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.monto}
+                                        </Form.Control.Feedback>
                                     </FloatingLabel>
                                 </Col>
                                 <Col sm="6" md="6" lg="6">
@@ -108,19 +141,40 @@ function PagoColegiatura() {
                                             placeholder="Ingrese la Fecha de Pago"
                                             value={fechaPago}
                                             onChange={(e) => setFechaPago(e.target.value)}
+                                            isInvalid={!!errors.fechaPago}
                                         />
-                                                                       </FloatingLabel>
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.fechaPago}
+                                        </Form.Control.Feedback>
+                                    </FloatingLabel>
                                 </Col>
-                                <Col sm="6" md="6" lg="6">
+                                <Col sm="6" md="6" lg="6" style={{ position: "relative" }}>
                                     <FloatingLabel controlId="IdAlumno" label="Alumno">
                                         <Form.Control
                                             type="text"
                                             placeholder="Seleccione un alumno"
                                             value={selectedAlumno.ID_Alumno ? `${selectedAlumno.ID_Alumno} - ${selectedAlumno.Nombres} ${selectedAlumno.Apellidos}` : ''}
                                             disabled
+                                            isInvalid={!!errors.ID_Alumno}
                                         />
-                                        <Button variant="primary" onClick={() => setShowAlumnoListModal(true)} className="mt-2">
-                                            Seleccionar Alumno
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.ID_Alumno}
+                                        </Form.Control.Feedback>
+                                        <Button
+                                            variant="primary"
+                                            onClick={() => setShowAlumnoListModal(true)}
+                                            style={{
+                                                position: "absolute",
+                                                top: "50%",
+                                                transform: "translateY(-50%)",
+                                                right: "10px",
+                                                padding: "0.375rem 0.75rem",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center"
+                                            }}
+                                        >
+                                            <FaPlus />
                                         </Button>
                                     </FloatingLabel>
                                 </Col>
@@ -150,4 +204,3 @@ function PagoColegiatura() {
 }
 
 export default PagoColegiatura;
-

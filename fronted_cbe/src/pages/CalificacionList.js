@@ -84,20 +84,23 @@ function CalificacionList({ handleCalificacionSelect }) {
     
 
     const handleUpdate = () => {
-        fetch(`http://localhost:5000/crud/updateCalificacion/${selectedCalificacion.ID_Calificacion}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-        })
-            .then((response) => {
-                if (response.ok) {
-                    setShowModal(false);
-                    loadCalificaciones();
-                }
+        const confirmation = window.confirm('¿Seguro que deseas actualizar esta calificación?');
+        if (confirmation) {
+            fetch(`http://localhost:5000/crud/updateCalificacion/${selectedCalificacion.ID_Calificacion}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
             })
-            .catch((error) => console.error('Error al actualizar la calificación:', error));
+                .then((response) => {
+                    if (response.ok) {
+                        setShowModal(false);
+                        loadCalificaciones();
+                    }
+                })
+                .catch((error) => console.error('Error al actualizar la calificación:', error));
+        }
     };
 
     const handleDelete = (idCalificacion) => {
@@ -139,38 +142,45 @@ function CalificacionList({ handleCalificacionSelect }) {
                     </Row>
 
                     <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th>ID</th>  
-                            <th>Calificación Obtenida</th>
-                            <th>Fecha Calificación</th>
-                            <th>Nombre Alumno</th>
-                            <th>Nombre Asignatura</th>
-                            <th>Corte Evaluativo</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredCalificaciones.map((calificacion, index) => (
-                            <tr key={calificacion.ID_Calificacion}>
-                                <td>{index + 1}</td>  {/* Mostrar el índice + 1 como ID secuencial */}
-                                <td>{calificacion.Calificacion_Obtenida}</td>
-                                <td>{formatDateForInput(calificacion.Fecha_Calificacion)}</td>
-                                <td>{calificacion.NombreAlumno}</td>
-                                <td>{calificacion.Nombre_Asignatura}</td>
-                                <td>{calificacion.Corte_Evaluativo}</td>
-                                <td>
-                                    <Button variant="success" onClick={() => openModal(calificacion)}>
-                                        <FaPencil />
-                                    </Button>
-                                    <Button variant="danger" onClick={() => handleDelete(calificacion.ID_Calificacion)}>
-                                        <FaTrashCan />
-                                    </Button>
-                                </td>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Calificación Obtenida</th>
+                                <th>Fecha Calificación</th>
+                                <th>Nombre Alumno</th>
+                                <th>Nombre Asignatura</th>
+                                <th>Corte Evaluativo</th>
+                                <th>Acciones</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                        </thead>
+                        <tbody>
+                            {filteredCalificaciones.map((calificacion, index) => (
+                                <tr key={calificacion.ID_Calificacion}>
+                                    <td>{index + 1}</td> {/* Mostrar el índice + 1 como ID secuencial */}
+                                    <td>{calificacion.Calificacion_Obtenida}</td>
+                                    <td>{formatDateForInput(calificacion.Fecha_Calificacion)}</td>
+                                    <td>{calificacion.NombreAlumno}</td>
+                                    <td>{calificacion.Nombre_Asignatura}</td>
+                                    <td>{calificacion.Corte_Evaluativo}</td>
+                                    <td>
+                                        <Button
+                                            variant="success"
+                                            onClick={() => openModal(calificacion)}
+                                            style={{ marginRight: '5px' }}
+                                        >
+                                            <FaPencil />
+                                        </Button>
+                                        <Button
+                                            variant="danger"
+                                            onClick={() => handleDelete(calificacion.ID_Calificacion)}
+                                        >
+                                            <FaTrashCan />
+                                        </Button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
                 </Card.Body>
             </Card>
 
