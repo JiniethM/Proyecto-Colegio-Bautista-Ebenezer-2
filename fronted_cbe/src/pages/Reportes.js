@@ -4,10 +4,12 @@ import jsPDF from "jspdf";
 import Chart from "chart.js/auto";
 import html2canvas from "html2canvas";
 import Header from "../components/Header";
-import portada from "../Imagenes/zyro-image (1).png";
 import emailjs from "emailjs-com";
 import * as XLSX from "xlsx";
 import { FaChartBar, FaEnvelope, FaFileExcel, FaFileAlt } from "react-icons/fa";
+import ChartDataLabels from "chartjs-plugin-datalabels";
+
+Chart.register(ChartDataLabels);
 
 const Estadisticas = ({ rol }) => {
   const [calificacionesPromedioAlumno, setCalificacionesPromedioAlumno] =
@@ -159,21 +161,34 @@ const Estadisticas = ({ rol }) => {
     fetchTop5Asignaturas();
   }, [year, month]);
 
-  const generateRandomColors = (length) => {
-    return Array.from(
-      { length },
-      () =>
-        `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(
-          Math.random() * 256
-        )}, ${Math.floor(Math.random() * 256)}, 0.2)`
-    );
+  const coloresVariados = [
+    "rgba(255, 99, 132, 0.8)",
+    "rgba(4, 59, 175, 255)",
+    "rgba(161, 254, 26, 255)",
+    "rgba(5, 62, 175, 255)",
+    "rgba(153, 102, 255, 0.8)",
+    "rgba(255, 159, 64, 0.8)",
+    "rgba(201, 203, 207, 0.8)",
+    "rgba(255, 99, 71, 0.8)",
+    "rgba(60, 179, 113, 0.8)",
+    "rgba(138, 43, 226, 0.8)",
+    "rgba(255, 165, 0, 0.8)",
+    "rgba(106, 90, 205, 0.8)",
+  ];
+
+  const generateColors = (length) => {
+    const colors = [];
+    for (let i = 0; i < length; i++) {
+      colors.push(coloresVariados[i % coloresVariados.length]);
+    }
+    return colors;
   };
 
   useEffect(() => {
     const createBarChart = (ref, labels, data) => {
       if (ref.current) {
         const ctxBar = ref.current.getContext("2d");
-        const colors = generateRandomColors(data.length);
+        const colors = generateColors(data.length);
         const barChart = new Chart(ctxBar, {
           type: "bar",
           data: {
@@ -183,7 +198,7 @@ const Estadisticas = ({ rol }) => {
                 label: "Promedio de Calificaciones",
                 data: data.map((value) => parseFloat(value).toFixed(2)),
                 backgroundColor: colors,
-                borderColor: colors.map((color) => color.replace("0.2", "1")),
+                borderColor: colors.map((color) => color.replace("0.8", "1")),
                 borderWidth: 1,
                 stack: "Stack 0",
               },
@@ -193,7 +208,7 @@ const Estadisticas = ({ rol }) => {
             responsive: true,
             plugins: {
               legend: {
-                display: false,
+                display: false, // Oculta la leyenda
               },
               tooltip: {
                 callbacks: {
@@ -204,6 +219,22 @@ const Estadisticas = ({ rol }) => {
                   },
                 },
               },
+              datalabels: {
+                color: "black",
+                font: {
+                  weight: "bold",
+                  size: 14,
+                },
+                align: "center",
+                anchor: "center",
+                formatter: (value) => {
+                  const numValue = parseFloat(value);
+                  if (isNaN(numValue)) {
+                    return "N/A";
+                  }
+                  return numValue.toFixed(2);
+                },
+              },
             },
             scales: {
               x: {
@@ -212,6 +243,14 @@ const Estadisticas = ({ rol }) => {
               y: {
                 stacked: true,
                 beginAtZero: true,
+              },
+            },
+            layout: {
+              padding: {
+                left: 10,
+                right: 10,
+                top: 20,
+                bottom: 20,
               },
             },
           },
@@ -315,26 +354,7 @@ const Estadisticas = ({ rol }) => {
       config.createChart(config.ref, config.labels, config.data)
     );
     return () => chartInstances.forEach((chart) => chart && chart.destroy());
-  }, [
-    calificacionesPromedioAlumno,
-    calificacionesPromedioAsignatura,
-    calificacionesPromedioGrado,
-    calificacionesPromedioDocente,
-    calificacionesPromedioFecha,
-    calificacionesTotalesAlumno,
-    calificacionesTotalesAsignatura,
-    top5Alumnos,
-    top5Asignaturas,
-    chartRefs.alumno,
-    chartRefs.asignatura,
-    chartRefs.grado,
-    chartRefs.docente,
-    chartRefs.fecha,
-    chartRefs.totalesAlumno,
-    chartRefs.totalesAsignatura,
-    chartRefs.top5Alumnos,
-    chartRefs.top5Asignaturas,
-  ]);
+  },);
 
   const formatearCalificaciones = (calificaciones, tipo) => {
     return calificaciones
@@ -400,21 +420,39 @@ const Estadisticas = ({ rol }) => {
       const pdf = new jsPDF();
 
       const imgPortada = new Image();
-      imgPortada.src = portada;
+      imgPortada.src = require("../Imagenes/Fondo para pdf.png"); // Ruta correcta a la imagen
       imgPortada.onload = () => {
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
-        pdf.addImage(imgPortada, "PNG", 0, 0, pageWidth, pageHeight);
-        pdf.setFontSize(30);
-        pdf.setTextColor(23, 32, 42);
-        pdf.text(titulo, pageWidth / 2, pageHeight / 2, { align: "center" });
+        const imgWidth = imgPortada.width;
+        const imgHeight = imgPortada.height;
+
+        const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
+        const centeredX = (pageWidth - imgWidth * ratio) / 2;
+        const centeredY = (pageHeight - imgHeight * ratio) / 2;
+
+        pdf.addImage(
+          imgPortada,
+          "PNG",
+          centeredX,
+          centeredY,
+          imgWidth * ratio,
+          imgHeight * ratio
+        );
 
         pdf.addPage();
-        pdf.addImage(imgData, "PNG", 10, 20, 180, 150);
+
+        // Añadir el título
+        pdf.setFontSize(20);
+        pdf.setTextColor(23, 32, 42);
+        pdf.text(titulo, pageWidth / 2, 20, { align: "center" });
+
+        // Añadir la imagen del gráfico
+        pdf.addImage(imgData, "PNG", 10, 30, 180, 150);
         pdf.setFontSize(12);
         pdf.setTextColor(0, 0, 0);
 
-        let y = 180;
+        let y = 190;
         datos.forEach((dato) => {
           const nombre =
             dato.Nombres ||
@@ -439,6 +477,11 @@ const Estadisticas = ({ rol }) => {
         link.download = `${fileName}.pdf`;
         link.click();
       };
+      imgPortada.onerror = () => {
+        console.error("Error loading image");
+      };
+    } else {
+      console.error("Chart reference is null");
     }
   };
 
@@ -540,8 +583,6 @@ const Estadisticas = ({ rol }) => {
                     >
                       <FaFileAlt style={{ color: "white" }} />
                     </Button>
-
-                    
                   </div>
                 </div>
               </Card.Body>

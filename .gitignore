@@ -1,1 +1,5 @@
 node_modules/
+spec/
+lib/
+coverage/
+

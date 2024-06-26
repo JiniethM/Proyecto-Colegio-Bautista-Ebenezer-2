@@ -6960,30 +6960,4 @@ INSERT INTO calificacion (Calificacion_Obtenida, Fecha_Calificacion, ID_Alumno, 
 (85, '2024-11-23', 117, 25, 'Cuarto Corte');
 
 
-
 SELECT * FROM calificacion;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
